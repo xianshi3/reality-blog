@@ -13,6 +13,15 @@ pnpm dev
 bun dev
 ```
 
+
+### Key Updates:
+
+1. **Environment Variable Setup**: Added instructions for creating a `.env.local` file and adding the `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` variables.
+2. **Supabase Configuration**: Provided clear instructions on how to get the credentials from the Supabase dashboard.
+
+This should help your team or any developers setting up the project to easily configure Supabase for local development.
+
+
 打开 [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
