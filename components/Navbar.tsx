@@ -10,8 +10,8 @@ import { useEffect, useState } from "react";
  * 支持自动读取/保存用户主题设置到 localStorage。
  */
 export default function Navbar() {
-  // 当前主题是否为暗色模式（默认 false）
   const [isDark, setIsDark] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // 控制菜单的展开和收起
 
   // 初次加载时读取本地主题设置
   useEffect(() => {
@@ -39,9 +39,10 @@ export default function Navbar() {
           Reality Blog
         </Link>
 
-        {/* 导航链接与主题切换 */}
-        <div className="flex items-center space-x-8">
-          <ul className="flex space-x-8">
+        {/* 导航区域（在小屏下改为可折叠菜单） */}
+        <div className="flex items-center space-x-8 md:space-x-8">
+          {/* 在大屏幕上显示导航链接 */}
+          <ul className="hidden md:flex space-x-8">
             {[
               { label: "首页", href: "/" },
               { label: "分类", href: "/category" },
@@ -67,8 +68,40 @@ export default function Navbar() {
           >
             {isDark ? "浅色模式" : "深色模式"}
           </button>
+
+          {/* 在小屏下显示菜单文字 */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden flex items-center justify-center px-3 py-2 rounded-lg text-gray-800 dark:text-white hover:text-gray-600 
+            dark:hover:text-gray-300 transition-colors duration-200"
+          >
+            菜单 {/* 直接使用菜单文字 */}
+          </button>
         </div>
       </div>
+
+      {/* 在小屏时显示菜单 */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white dark:bg-gray-800 shadow-lg absolute top-16 left-0 right-0 z-50 py-4 px-6">
+          <ul className="space-y-4">
+            {[
+              { label: "首页", href: "/" },
+              { label: "分类", href: "/category" },
+              { label: "联系我", href: "/contact" },
+            ].map(({ label, href }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="font-medium text-gray-800 dark:text-white hover:text-gray-600 
+                  dark:hover:text-gray-300 transition-colors duration-200 block px-3 py-2 rounded-lg hover:bg-white/20"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </nav>
   );
 }
