@@ -1,4 +1,5 @@
 import Image from "next/image";
+import TechStackCard from './TechStackCard';
 
 interface RightSidebarProps {
   tags: string[];
@@ -6,7 +7,7 @@ interface RightSidebarProps {
 }
 
 /**
- * 右侧边栏组件，显示个人信息、热门标签和推荐阅读列表
+ * 右侧边栏组件，显示个人信息、技术栈、热门标签和推荐阅读列表
  */
 export default function RightSidebar({ tags, recommends }: RightSidebarProps) {
   return (
@@ -26,6 +27,9 @@ export default function RightSidebar({ tags, recommends }: RightSidebarProps) {
           全栈开发工程师的技术与生活
         </p>
       </div>
+
+      {/* 技术栈卡片 */}
+      <TechStackCard />
 
       {/* 热门标签 - 右滑入动画 */}
       <div className="bg-white dark:bg-[#23272f] rounded-2xl shadow-lg p-5 border border-gray-100 dark:border-gray-800 animate-fadeInRight">

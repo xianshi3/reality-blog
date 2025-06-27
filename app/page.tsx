@@ -13,6 +13,7 @@ import Footer from "../components/Footer";
 import { supabase } from "../lib/supabaseClient";
 import type { Article } from "../types/article";
 import AIChat from "../components/AIChat";
+import RandomArticleCard from '../components/RandomArticleCard';
 
 /**
  * 博客首页组件
@@ -67,7 +68,7 @@ export default async function Home() {
       <Header />
       {/* 主体内容区域 */}
       <main className="container mx-auto flex flex-col lg:flex-row w-full max-w-6xl px-4 gap-6 py-8">
-        <LeftSidebar />
+        <LeftSidebar articles={articles}/>
         <MainContent articles={articles} />
         <RightSidebar tags={tags} recommends={recommends} />
       </main>
