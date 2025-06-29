@@ -13,7 +13,6 @@ pnpm dev
 bun dev
 ```
 
-
 ### Key Updates
 
 1. **Environment Variable Setup**: Added instructions for creating a `.env.local` file and adding the `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` variables.
