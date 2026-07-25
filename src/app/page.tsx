@@ -72,8 +72,8 @@ export default async function Home() {
       {/* 顶部导航栏 */}
       <Header
         parallaxImage={profile?.parallax_image_url || "/parallax-bg.png"}
-        parallaxTitle={profile?.parallax_title || "Reality Blog"}
-        parallaxSubtitle={profile?.parallax_subtitle || "探索技术与世界的边界"}
+        parallaxTitle={profile?.parallax_title ?? ""}
+        parallaxSubtitle={profile?.parallax_subtitle ?? ""}
       />
 
       {/* 主体区域：左侧栏 + 文章内容 + 右侧栏 */}
