@@ -20,7 +20,7 @@ import "./admin.css";
 const NAV_ITEMS: { href: string; label: string; icon: React.ComponentType; exact?: boolean; disabled?: boolean }[] = [
   { href: "/admin", label: "控制台", icon: FaGaugeHigh },
   { href: "/admin/create", label: "写文章", icon: FaPenToSquare },
-  { href: "/admin", label: "文章管理", icon: FaNewspaper, exact: true },
+  { href: "/admin/articles", label: "文章管理", icon: FaNewspaper },
   { href: "/admin/images", label: "图片管理", icon: FaImages },
   { href: "/admin/settings", label: "设置", icon: FaGear },
 ];
