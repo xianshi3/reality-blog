@@ -124,7 +124,7 @@ export default async function AdminPage() {
           </ul>
         ) : (
           <div className="admin-empty">
-            <span style={{ fontSize: "2.5rem", display: "block", marginBottom: "0.5rem" }}>📝</span>
+            <FaNewspaper style={{ fontSize: "2rem", display: "block", margin: "0 auto 0.5rem" }} />
             <p>暂无文章，开始写第一篇吧</p>
             <Link href="/admin/create" className="admin-btn admin-btn-primary" style={{ marginTop: "1rem", display: "inline-flex" }}>
               <FaPenToSquare /> 写新文章

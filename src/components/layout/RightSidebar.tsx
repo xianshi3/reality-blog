@@ -35,7 +35,7 @@ export default function RightSidebar({
   }, []);
 
   const cardClass =
-    "relative bg-white dark:bg-[#23272f] border border-gray-100 dark:border-gray-800 rounded-2xl shadow-lg p-6 transition-all duration-300 ease-in-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl";
+    "relative bg-white/70 dark:bg-[#23272f]/70 backdrop-blur-md border border-white/40 dark:border-gray-700/40 rounded-2xl shadow-lg p-6 transition-all duration-300 ease-in-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl";
 
   const p = profile;
 
@@ -44,7 +44,7 @@ export default function RightSidebar({
 
       <div className={`${cardClass} flex flex-col items-center text-center`}>
 
-        <div className="mb-4">
+        <div className="mb-4 p-1 rounded-2xl bg-gradient-to-br from-white/40 to-white/10 dark:from-white/10 dark:to-white/5 backdrop-blur-md shadow-sm">
           <Image
             src={p?.avatar_url || "/avatar.png"}
             alt="头像"
@@ -53,7 +53,7 @@ export default function RightSidebar({
             sizes="96px"
             quality={100}
             priority
-            className="rounded-full object-cover ring-4 ring-blue-200 dark:ring-blue-900 transition-transform duration-300 hover:scale-105"
+            className="rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg transition-transform duration-300 hover:scale-105"
           />
         </div>
 

@@ -147,27 +147,7 @@ export default function ParallaxSection({
         }}
       />
       
-      {/* 动态网格效果 - 与背景同步移动 */}
-      <div 
-        className="absolute inset-0 opacity-20 will-change-transform"
-        style={{
-          transform: isMobile 
-            ? `translateY(${parallaxOffset}px)` 
-            : `translateY(${parallaxOffset}px) 
-               translateX(${mouseMoveX * 0.8}px) 
-               translateY(${mouseMoveY * 0.8}px)`,
-          transition: "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          opacity: isHovered && !isMobile ? 0.3 : 0.2,
-        }}
-      >
-        <div className="absolute inset-0" style={{
-          backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-                            linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 1px, transparent 1px)`,
-          backgroundSize: '40px 40px',
-          maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 70%)'
-        }} />
-      </div>
-    
+      
       
       {/* 渐变遮罩 - 与背景同步移动 */}
       <div 

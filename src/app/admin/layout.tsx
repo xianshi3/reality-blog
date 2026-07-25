@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaGaugeHigh,
   FaPenToSquare,
@@ -12,6 +12,8 @@ import {
   FaBars,
   FaXmark,
   FaNewspaper,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa6";
 import "./admin.css";
 
@@ -26,6 +28,20 @@ const NAV_ITEMS: { href: string; label: string; icon: React.ComponentType; exact
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("admin_sidebar_collapsed");
+    if (stored === "true") setCollapsed(true);
+  }, []);
+
+  const toggleCollapse = () => {
+    setCollapsed((c) => {
+      const next = !c;
+      localStorage.setItem("admin_sidebar_collapsed", String(next));
+      return next;
+    });
+  };
 
   const isActive = (item: (typeof NAV_ITEMS)[number]) => {
     if (item.disabled) return false;
@@ -33,13 +49,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return pathname.startsWith(item.href);
   };
 
+  const sidebarWidth = collapsed ? 64 : 230;
+
   return (
     <div className="admin-shell">
       {sidebarOpen && (
         <div className="admin-overlay" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className={`admin-sidebar ${sidebarOpen ? "open" : ""}`}>
+      <aside
+        className={`admin-sidebar ${sidebarOpen ? "open" : ""} ${collapsed ? "collapsed" : ""}`}
+      >
         <div className="admin-sidebar-header">
           <Link href="/admin" className="admin-sidebar-brand">
             <div className="admin-sidebar-brand-icon">
@@ -49,7 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <path d="M8 7h8" /><path d="M8 11h6" /><path d="M8 15h4" />
               </svg>
             </div>
-            <span>Reality Blog</span>
+            {!collapsed && <span>Reality Blog</span>}
           </Link>
           <button
             className="admin-sidebar-close"
@@ -70,29 +90,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 className={`admin-nav-item ${isActive(item) ? "active" : ""} ${item.disabled ? "disabled" : ""}`}
                 onClick={() => setSidebarOpen(false)}
                 aria-disabled={item.disabled}
+                title={collapsed ? item.label : undefined}
               >
                 <Icon />
-                <span>{item.label}</span>
-                {item.disabled && <span className="admin-nav-badge">即将推出</span>}
-                {isActive(item) && <span className="admin-nav-indicator" />}
+                {!collapsed && <span>{item.label}</span>}
+                {!collapsed && item.disabled && <span className="admin-nav-badge">即将推出</span>}
               </Link>
             );
           })}
         </nav>
 
         <div className="admin-sidebar-footer">
-          <div className="admin-sidebar-user">
-            <div className="admin-sidebar-avatar">A</div>
-            <span>管理员</span>
+          {!collapsed && (
+            <div className="admin-sidebar-user">
+              <div className="admin-sidebar-avatar">A</div>
+              <span>管理员</span>
+            </div>
+          )}
+          {collapsed && (
+            <div className="admin-sidebar-user-compact">
+              <div className="admin-sidebar-avatar">A</div>
+            </div>
+          )}
+          <div className="admin-sidebar-footer-links">
+            <Link href="/" className="admin-nav-item" title="返回前台">
+              <FaArrowLeft />
+              {!collapsed && <span>返回前台</span>}
+            </Link>
+            <button className="admin-nav-item admin-collapse-btn" onClick={toggleCollapse} title={collapsed ? "展开" : "收起"}>
+              {collapsed ? <FaChevronRight /> : <FaChevronLeft />}
+              {!collapsed && <span>收起</span>}
+            </button>
           </div>
-          <Link href="/" className="admin-nav-item">
-            <FaArrowLeft />
-            <span>返回前台</span>
-          </Link>
         </div>
       </aside>
 
-      <div className="admin-main">
+      <div className="admin-main" style={{ marginLeft: sidebarWidth }}>
         <div className="admin-mobile-header">
           <button
             className="admin-mobile-menu-btn"

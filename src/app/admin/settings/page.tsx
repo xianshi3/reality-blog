@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { uploadImage } from "@/lib/upload";
+import ImageCropper from "@/components/common/ImageCropper";
 import { FaCheck, FaUpload, FaUser, FaGear, FaImage } from "react-icons/fa6";
 
 interface Profile {
@@ -23,7 +24,7 @@ function SettingsSkeleton() {
       </div>
       <div className="admin-card" style={{ maxWidth: 600 }}>
         <div className="flex flex-col items-center mb-6">
-          <div className="admin-skeleton" style={{ width: 96, height: 96, borderRadius: "50%", marginBottom: 12 }} />
+          <div className="admin-skeleton" style={{ width: 96, height: 96, borderRadius: 12, marginBottom: 12 }} />
           <div className="admin-skeleton" style={{ width: 100, height: 32, borderRadius: 8 }} />
         </div>
         {Array.from({ length: 4 }).map((_, i) => (
@@ -44,6 +45,11 @@ export default function SettingsPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropField, setCropField] = useState<"avatar_url" | "parallax_image_url" | null>(null);
+  const [cropDataUrl, setCropDataUrl] = useState<string | null>(null);
+
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const parallaxInputRef = useRef<HTMLInputElement>(null);
 
@@ -58,15 +64,36 @@ export default function SettingsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleUpload = async (file: File, field: "avatar_url" | "parallax_image_url") => {
+  const handleFileSelect = (file: File, field: "avatar_url" | "parallax_image_url") => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropFile(file);
+      setCropField(field);
+      setCropDataUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropConfirm = async (blob: Blob) => {
+    if (!cropField) return;
+    const file = new File([blob], cropFile?.name || "crop.jpg", { type: "image/jpeg" });
     try {
       const url = await uploadImage(file);
-      setProfile((prev) => prev ? { ...prev, [field]: url } : prev);
-      setMessage(field === "avatar_url" ? "头像上传成功" : "背景图上传成功");
+      setProfile((prev) => prev ? { ...prev, [cropField]: url } : prev);
+      setMessage(cropField === "avatar_url" ? "头像上传成功" : "背景图上传成功");
       setError("");
-    } catch (err) {
+    } catch {
       setError("上传失败");
     }
+    setCropFile(null);
+    setCropField(null);
+    setCropDataUrl(null);
+  };
+
+  const handleCropCancel = () => {
+    setCropFile(null);
+    setCropField(null);
+    setCropDataUrl(null);
   };
 
   const handleSave = async () => {
@@ -117,17 +144,24 @@ export default function SettingsPage() {
         <div className="admin-form-section">
           <h2 className="admin-form-section-title"><FaUser /> 头像</h2>
           <div className="flex flex-col items-center">
-            <img
-              src={profile.avatar_url || "/avatar.png"}
-              alt="头像"
-              className="admin-avatar-preview mb-3"
-            />
+            <div className="p-1 mb-3 rounded-2xl bg-gradient-to-br from-white/40 to-white/10 dark:from-white/10 dark:to-white/5 backdrop-blur-md shadow-sm">
+              <img
+                src={profile.avatar_url || "/avatar.png"}
+                alt="头像"
+                className="rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg"
+                style={{ width: 96, height: 96 }}
+              />
+            </div>
             <input
               type="file"
               ref={avatarInputRef}
               accept="image/*"
               className="hidden"
-              onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], "avatar_url")}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleFileSelect(file, "avatar_url");
+                e.target.value = "";
+              }}
             />
             <button className="admin-btn admin-btn-secondary" onClick={() => avatarInputRef.current?.click()}>
               <FaUpload /> 上传头像
@@ -179,7 +213,11 @@ export default function SettingsPage() {
                 ref={parallaxInputRef}
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], "parallax_image_url")}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileSelect(file, "parallax_image_url");
+                  e.target.value = "";
+                }}
               />
               <button className="admin-btn admin-btn-secondary" onClick={() => parallaxInputRef.current?.click()}>
                 <FaUpload /> 上传
@@ -205,6 +243,16 @@ export default function SettingsPage() {
           <FaCheck /> {saving ? "保存中..." : "保存"}
         </button>
       </div>
+
+      {/* Cropper modal */}
+      {cropDataUrl && cropField && (
+        <ImageCropper
+          image={cropDataUrl}
+          aspect={cropField === "avatar_url" ? 1 : 21 / 9}
+          onCrop={handleCropConfirm}
+          onCancel={handleCropCancel}
+        />
+      )}
     </div>
   );
 }
