@@ -290,6 +290,9 @@
 .admin-sidebar-footer {
   padding: 0.5rem;
   border-top: 1px solid rgba(229, 231, 235, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .dark .admin-sidebar-footer {
@@ -299,7 +302,7 @@
 .admin-sidebar-footer-links {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .collapsed .admin-sidebar-footer-links .admin-nav-item {
@@ -310,16 +313,20 @@
 .admin-sidebar-user {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0.75rem;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem 0.4rem;
   border-radius: 0.4rem;
   font-size: 0.82rem;
   color: #6b7280;
-  margin-bottom: 0.25rem;
 }
 
 .dark .admin-sidebar-user {
   color: #9ca3af;
+}
+
+.admin-sidebar-username {
+  flex: 1;
+  font-weight: 500;
 }
 
 .admin-sidebar-user-compact {
@@ -341,15 +348,6 @@
   font-size: 0.65rem;
   font-weight: 700;
   flex-shrink: 0;
-}
-
-.admin-theme-row {
-  justify-content: space-between;
-  cursor: default;
-}
-
-.admin-theme-row:hover::before {
-  opacity: 0 !important;
 }
 
 .admin-collapse-btn {

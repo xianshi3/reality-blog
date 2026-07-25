@@ -135,7 +135,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {!collapsed && (
             <div className="admin-sidebar-user">
               <div className="admin-sidebar-avatar">A</div>
-              <span>管理员</span>
+              <span className="admin-sidebar-username">管理员</span>
+              <ThemeToggle />
             </div>
           )}
           {collapsed && (
@@ -148,15 +149,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <FaArrowLeft />
               {!collapsed && <span>返回前台</span>}
             </Link>
-            {!collapsed && (
-              <div className="admin-nav-item admin-theme-row">
-                <span>主题</span>
-                <ThemeToggle />
-              </div>
-            )}
             <button className="admin-nav-item admin-collapse-btn" onClick={toggleCollapse} title={collapsed ? "展开" : "收起"}>
               {collapsed ? <FaChevronRight /> : <FaChevronLeft />}
-              {!collapsed && <span>收起</span>}
+              {!collapsed && <span>收起侧栏</span>}
             </button>
           </div>
         </div>
