@@ -33,6 +33,43 @@
   border-color: #2f3540;
 }
 
+.image-card-avatar {
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+.dark .image-card-avatar {
+  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.15);
+}
+
+.image-card-parallax {
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+}
+
+.dark .image-card-parallax {
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.15);
+}
+
+.image-usage-badge {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: rgba(99, 102, 241, 0.9);
+  color: white;
+  backdrop-filter: blur(4px);
+  z-index: 1;
+}
+
+.image-card-parallax .image-usage-badge {
+  background: rgba(16, 185, 129, 0.9);
+}
+
 .image-card img {
   width: 100%;
   height: 150px;

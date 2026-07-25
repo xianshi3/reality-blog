@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadImage } from "@/lib/upload";
-import { FaTrashCan, FaImages, FaUpload } from "react-icons/fa6";
+import { FaTrashCan, FaImages, FaUpload, FaUser, FaImage } from "react-icons/fa6";
 import "./images.css";
 
 interface ImageItem {
@@ -11,6 +11,7 @@ interface ImageItem {
   size?: number;
   publicUrl: string;
   article?: { id: number; title: string } | null;
+  usage?: string;
 }
 
 function ImageSkeleton() {
@@ -55,9 +56,15 @@ export default function ImageManagerPage() {
         /\.(jpg|jpeg|png|webp|gif)$/i.test(item.name)
       );
 
-      const { data: articlesData } = await supabase
-        .from("articles")
-        .select("id, title, image_url");
+      const [{ data: articlesData }, { data: profileData }] = await Promise.all([
+        supabase.from("articles").select("id, title, image_url"),
+        supabase.from("profile").select("avatar_url, parallax_image_url").single(),
+      ]);
+
+      const profile = profileData as { avatar_url?: string; parallax_image_url?: string } | null;
+
+      const avatarName = profile?.avatar_url?.split("/").pop();
+      const parallaxName = profile?.parallax_image_url?.split("/").pop();
 
       const imgs: ImageItem[] = files.map((item) => {
         const { data: urlData } = supabase.storage
@@ -70,6 +77,10 @@ export default function ImageManagerPage() {
           return artFileName === item.name;
         });
 
+        let usage: string | undefined;
+        if (item.name === avatarName) usage = "头像";
+        else if (item.name === parallaxName) usage = "视差背景";
+
         return {
           name: item.name,
           publicUrl: urlData.publicUrl,
@@ -77,6 +88,7 @@ export default function ImageManagerPage() {
           article: relatedArticle
             ? { id: relatedArticle.id, title: relatedArticle.title }
             : null,
+          usage,
         };
       });
 
@@ -174,14 +186,19 @@ export default function ImageManagerPage() {
         </div>
       ) : (
         <div className="image-grid">
-          {images.map(({ publicUrl, size, name, article }, idx) => (
+          {images.map(({ publicUrl, size, name, article, usage }, idx) => (
             <div
               key={publicUrl}
-              className="image-card"
+              className={`image-card ${usage === "头像" ? "image-card-avatar" : ""} ${usage === "视差背景" ? "image-card-parallax" : ""}`}
               style={{ animationDelay: `${idx * 30}ms` }}
               title={article?.title || "未关联文章"}
             >
               <img src={publicUrl} alt={article?.title || "文章封面"} loading="lazy" />
+              {usage && (
+                <span className="image-usage-badge">
+                  {usage === "头像" ? <FaUser /> : <FaImage />} {usage}
+                </span>
+              )}
               <div className="image-info">
                 <p className="image-title">{article?.title || "未关联文章"}</p>
                 {size && <span className="image-size">{formatSize(size)}</span>}
