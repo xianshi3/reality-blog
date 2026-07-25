@@ -35,12 +35,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="admin-shell">
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div className="admin-overlay" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* Sidebar */}
       <aside className={`admin-sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="admin-sidebar-header">
           <Link href="/admin" className="admin-sidebar-brand">
@@ -76,6 +74,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Icon />
                 <span>{item.label}</span>
                 {item.disabled && <span className="admin-nav-badge">即将推出</span>}
+                {isActive(item) && <span className="admin-nav-indicator" />}
               </Link>
             );
           })}
@@ -93,9 +92,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </aside>
 
-      {/* Main content */}
       <div className="admin-main">
-        {/* Mobile header */}
         <div className="admin-mobile-header">
           <button
             className="admin-mobile-menu-btn"

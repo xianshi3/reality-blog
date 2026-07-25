@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { uploadImage } from "@/lib/upload";
-import { FaBold, FaItalic, FaHeading, FaCode, FaListOl, FaListUl, FaImage } from "react-icons/fa6";
+import {
+  FaBold, FaItalic, FaHeading, FaCode, FaListOl, FaListUl, FaImage,
+  FaPenToSquare, FaUpload, FaTags, FaCalendar, FaFileLines, FaFolder,
+} from "react-icons/fa6";
 import "../editor.css";
 
 const TOOLBAR_ACTIONS = [
@@ -42,6 +45,7 @@ export default function CreateArticle() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -102,7 +106,7 @@ export default function CreateArticle() {
     <div className="editor-page">
       <div className="editor-header">
         <h1 className="admin-page-title">
-          <span>✏️</span>撰写新文章
+          <FaPenToSquare /> 撰写新文章
         </h1>
         <button
           className="editor-submit-btn"
@@ -152,19 +156,23 @@ export default function CreateArticle() {
         </div>
 
         <aside className="editor-sidebar">
-          {/* Cover image */}
           <div className="editor-card">
-            <h3 className="editor-card-title">封面图片</h3>
-            <label className="editor-upload-btn">
-              {uploading ? "上传中..." : imageFile ? "更换图片" : "选择封面图片"}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageSelect}
-                disabled={uploading || loading}
-                hidden
-              />
-            </label>
+            <h3 className="editor-card-title"><FaImage /> 封面图片</h3>
+            <button
+              className="editor-upload-btn"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading || loading}
+            >
+              <FaUpload /> {uploading ? "上传中..." : imageFile ? "更换图片" : "选择封面图片"}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageSelect}
+              disabled={uploading || loading}
+              hidden
+            />
             {imageFile && (
               <div className="editor-preview-wrap">
                 <img
@@ -176,9 +184,8 @@ export default function CreateArticle() {
             )}
           </div>
 
-          {/* Basic info */}
           <div className="editor-card">
-            <h3 className="editor-card-title">基本信息</h3>
+            <h3 className="editor-card-title"><FaFileLines /> 基本信息</h3>
             <div className="editor-field">
               <label className="editor-field-label">摘要</label>
               <input
@@ -189,7 +196,7 @@ export default function CreateArticle() {
               />
             </div>
             <div className="editor-field">
-              <label className="editor-field-label">分类</label>
+              <label className="editor-field-label"><FaFolder /> 分类</label>
               <input
                 className="editor-field-input"
                 placeholder="如：技术、生活、教程"
@@ -199,9 +206,8 @@ export default function CreateArticle() {
             </div>
           </div>
 
-          {/* Metadata */}
           <div className="editor-card">
-            <h3 className="editor-card-title">元数据</h3>
+            <h3 className="editor-card-title"><FaTags /> 元数据</h3>
             <div className="editor-field">
               <label className="editor-field-label">标签</label>
               <input
@@ -212,7 +218,7 @@ export default function CreateArticle() {
               />
             </div>
             <div className="editor-field">
-              <label className="editor-field-label">发布日期</label>
+              <label className="editor-field-label"><FaCalendar /> 发布日期</label>
               <input
                 className="editor-field-input"
                 type="date"
