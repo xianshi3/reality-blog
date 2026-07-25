@@ -1,138 +1,196 @@
 <div align="center">
+  <br/>
+  <br/>
+  <img src="https://img.shields.io/badge/Reality-Blog-6366f1?style=for-the-badge&logoColor=white" alt="Reality Blog" height="40"/>
+  <br/>
+  <br/>
 
-# Reality Blog
+  <p>
+    <b>🚀 A modern personal blog built with Next.js 16</b><br/>
+    <sub>Markdown writing · AI Chat · Dark mode · Parallax design · Full admin panel</sub>
+  </p>
 
-**现代化个人博客 — 技术写作 × AI 聊天 × 全栈管理**
+  <br/>
 
-![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=next.js&logoColor=white)
-![React](https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS_4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
+  <!-- Tech Stack Badges -->
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js"/></a>
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React"/></a>
+  <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript_5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/></a>
+  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/TailwindCSS_4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="TailwindCSS"/></a>
+  <br/>
+  <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase"/></a>
+  <a href="https://www.framer.com/motion"><img src="https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion"/></a>
+  <a href="https://zhipuai.cn"><img src="https://img.shields.io/badge/ZhipuAI-3859FF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAxOGMtNC40MSAwLTgtMy41OS04LThzMy41OS04IDgtOCA4IDMuNTkgOCA4LTMuNTkgOC04IDh6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==&logoColor=white" alt="ZhipuAI"/></a>
+  <a href="https://github.com/remarkjs/react-markdown"><img src="https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white" alt="Markdown"/></a>
 
+  <br/>
+  <br/>
+
+  <!-- Badges row -->
+  <img src="https://img.shields.io/github/license/xianshi3/Reality-Blog?style=flat-square&color=6366f1" alt="License"/>
+  <img src="https://img.shields.io/badge/PRs-welcome-22c55e?style=flat-square" alt="PRs Welcome"/>
+  <img src="https://img.shields.io/github/last-commit/xianshi3/Reality-Blog?style=flat-square&color=6366f1" alt="Last Commit"/>
+
+  <br/>
+  <br/>
+  <br/>
 </div>
 
 ---
 
-## ✨ 特性
+## 📋 目录
 
-| 特性 | 描述 |
-|------|------|
-| 📝 **Markdown 写作** | 全功能 Markdown 编辑器，工具栏快速插入语法 |
-| 🏷️ **分类与标签** | 文章分类归档，标签云导航 |
-| 🤖 **AI 聊天** | 集成智谱 GLM-4-Flash，浮动气泡 / 全屏双模式 |
-| 🎨 **视差首页** | 动态视差滚动背景 + 鼠标交互效果 |
-| 🌓 **深色模式** | 系统感知 + 手动切换，无闪烁 |
-| 🖼️ **图片管理** | 上传 / 裁剪 / 删除，自动识别头像和背景图 |
-| 🔍 **文章管理** | 分页列表、标题搜索、分类筛选 |
-| 📊 **管理控制台** | 数据概览、快捷操作、最近文章 |
-| ⚡ **Turbopack** | 开发服务器极速启动 |
-| 📱 **响应式设计** | 桌面 / 平板 / 手机全适配 |
+- [特性一览](#-特性一览)
+- [技术栈](#-技术栈)
+- [快速开始](#-快速开始)
+- [数据库](#-数据库)
+- [后台管理](#-后台管理)
+- [项目结构](#-项目结构)
+- [功能亮点](#-功能亮点)
+- [构建部署](#-构建部署)
 
 ---
 
-## 🏗️ 技术架构
+## ✨ 特性一览
 
-```
-┌─────────────────────────────────────┐
-│           Next.js 16 (App Router)        │
-│  ┌──────────┐  ┌──────────────────┐  │
-│  │  Server   │  │     Client       │  │
-│  │  Pages    │  │    Components    │  │
-│  ├──────────┤  ├──────────────────┤  │
-│  │ API Routes│  │ Framer Motion   │  │
-│  │ Supabase  │  │ react-easy-crop │  │
-│  │ Server    │  │ Theme Toggle    │  │
-│  └──────────┘  └──────────────────┘  │
-│           TailwindCSS 4                │
-├─────────────────────────────────────┤
-│           Supabase                    │
-│  ┌──────────┐  ┌──────────────────┐  │
-│  │ PostgreSQL│  │  Auth (Email)   │  │
-│  ├──────────┤  ├──────────────────┤  │
-│  │ Storage  │  │    RLS Policy    │  │
-│  └──────────┘  └──────────────────┘  │
-├─────────────────────────────────────┤
-│       ZhipuAI (GLM-4-Flash)          │
-└─────────────────────────────────────┘
-```
+<table>
+  <thead>
+    <tr>
+      <th width="200">特性</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="https://img.shields.io/badge/Markdown-000000?style=flat-square&logo=markdown&logoColor=white"/> 写作</td>
+      <td>全功能 Markdown 编辑器，工具栏一键插入标题、列表、代码块、图片语法</td>
+    </tr>
+    <tr>
+      <td><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white"/> 后台管理</td>
+      <td>控制台统计、文章管理（搜索/分页/分类筛选）、图片管理、个人信息设置</td>
+    </tr>
+    <tr>
+      <td><img src="https://img.shields.io/badge/ZhipuAI-3859FF?style=flat-square&logoColor=white"/> AI 聊天</td>
+      <td>集成智谱 GLM-4-Flash 模型，浮动气泡 + 全屏双模式，流式输出</td>
+    </tr>
+    <tr>
+      <td><img src="https://img.shields.io/badge/dynamic-6366f1?style=flat-square&label=Parallax&labelColor=6366f1&color=6366f1"/> 视差首页</td>
+      <td>动态视差滚动背景 + 鼠标 3D 倾斜交互，支持自定义背景图与标题</td>
+    </tr>
+    <tr>
+      <td><img src="https://img.shields.io/badge/Framer-0055FF?style=flat-square&logo=framer&logoColor=white"/> 动画</td>
+      <td>页面过渡动画、卡片悬停效果、视差滚动、点赞微交互</td>
+    </tr>
+    <tr>
+      <td><img src="https://img.shields.io/badge/dark_mode-000000?style=flat-square&logo=darkreader&logoColor=white"/> 深色模式</td>
+      <td>系统自动感知 + 手动切换，inline script 防 FOUC，全站适配</td>
+    </tr>
+    <tr>
+      <td><img src="https://img.shields.io/badge/responsive-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white"/> 响应式</td>
+      <td>桌面 / 平板 / 手机全尺寸适配，移动端侧栏抽屉菜单</td>
+    </tr>
+    <tr>
+      <td><img src="https://img.shields.io/badge/Image_Crop-000000?style=flat-square&logo=canvas&logoColor=white"/> 图片裁剪</td>
+      <td>上传前裁剪：头像 1:1 正方形，视差背景 21:9 宽屏</td>
+    </tr>
+  </tbody>
+</table>
 
-### 核心依赖
+---
 
-| 类别 | 技术 |
+## 🛠️ 技术栈
+
+<div align="center">
+  <br/>
+  <table>
+    <tr>
+      <td align="center" width="100">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" width="40"/><br/>
+        <sub>Next.js 16</sub>
+      </td>
+      <td align="center" width="100">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="40"/><br/>
+        <sub>React 19</sub>
+      </td>
+      <td align="center" width="100">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" width="40"/><br/>
+        <sub>TypeScript 5</sub>
+      </td>
+      <td align="center" width="100">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" width="40"/><br/>
+        <sub>TailwindCSS 4</sub>
+      </td>
+      <td align="center" width="100">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg" width="40"/><br/>
+        <sub>Supabase</sub>
+      </td>
+    </tr>
+  </table>
+  <br/>
+</div>
+
+| 分类 | 技术 |
 |------|------|
-| **框架** | Next.js 16, React 19, TypeScript 5 |
-| **样式** | TailwindCSS 4, CSS Modules |
-| **数据库** | Supabase (PostgreSQL + Auth + Storage) |
-| **Markdown** | react-markdown, remark-gfm, rehype-highlight, rehype-slug |
-| **动画** | Framer Motion 12 |
-| **AI** | ZhipuAI SDK (GLM-4-Flash) |
-| **图片裁剪** | react-easy-crop |
+| **框架** | Next.js 16 (App Router, Turbopack) + React 19 + TypeScript 5 |
+| **样式** | TailwindCSS 4 + 毛玻璃效果 (backdrop-filter) |
+| **数据库** | Supabase (PostgreSQL + Auth + Storage + RLS) |
+| **Markdown** | react-markdown + remark-gfm + rehype-highlight + rehype-slug |
+| **动画** | Framer Motion 12 + CSS Animations |
+| **AI** | ZhipuAI SDK (GLM-4-Flash, SSE 流式) |
+| **图片** | react-easy-crop (裁剪) + Supabase Storage (存储) |
 | **图标** | react-icons (Font Awesome 6) |
+| **代码高亮** | highlight.js (GitHub Dark) |
 
 ---
 
 ## 🚀 快速开始
 
-### 1. 克隆项目
-
 ```bash
+# 1. 克隆
 git clone https://github.com/xianshi3/Reality-Blog.git
 cd Reality-Blog
-```
 
-### 2. 安装依赖
-
-```bash
+# 2. 安装
 npm install
-```
 
-### 3. 配置环境变量
+# 3. 配置环境
+cp .env.example .env.local
+# 编辑 .env.local 填入密钥
 
-创建 `.env.local`：
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-ZHIPU_API_KEY=your-zhipu-api-key
-```
-
-### 4. 启动开发服务器
-
-```bash
+# 4. 开发
 npm run dev
 ```
 
-打开 [http://localhost:3000](http://localhost:3000)
+### 环境变量
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=           # Supabase 项目地址
+NEXT_PUBLIC_SUPABASE_ANON_KEY=      # Supabase 匿名密钥
+SUPABASE_SERVICE_ROLE_KEY=          # Supabase 服务角色密钥（仅服务端）
+ZHIPU_API_KEY=                      # 智谱 AI API 密钥
+```
 
 ---
 
-## 📖 数据库配置
+## 📦 数据库
 
-### 表结构
-
-<details>
-<summary><code>articles</code> — 文章表</summary>
+### `articles` — 文章
 
 ```sql
 CREATE TABLE articles (
-  id       UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  title    TEXT NOT NULL,
-  date     TIMESTAMP DEFAULT now(),
-  category TEXT,
-  summary  TEXT,
-  content  TEXT,
-  tags     TEXT DEFAULT '{}',
-  likes    INTEGER DEFAULT 0,
+  id        UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title     TEXT NOT NULL,
+  date      TIMESTAMP DEFAULT now(),
+  category  TEXT,
+  summary   TEXT,
+  content   TEXT,
+  tags      TEXT DEFAULT '{}',
+  likes     INTEGER DEFAULT 0,
   image_url TEXT
 );
 ```
-</details>
 
-<details>
-<summary><code>profile</code> — 个人信息表（单行）</summary>
+### `profile` — 个人信息（单行）
 
 ```sql
 CREATE TABLE profile (
@@ -148,80 +206,109 @@ CREATE TABLE profile (
   updated_at         TIMESTAMPTZ DEFAULT now()
 );
 ```
-</details>
 
-> 完整 SQL 见 [`schema.sql`](./schema.sql)
+> 完整 DDL 和 RLS 策略见 [`schema.sql`](./schema.sql)
 
-### Supabase 配置
+### Supabase 配置步骤
 
 1. 在 [Supabase Dashboard](https://supabase.com) 创建项目
-2. 启用 **Email Auth**（Settings → Authentication → Providers）
-3. 创建 `article-images` 存储桶（公开）
-4. 执行 `schema.sql` 创建表并设置 RLS
+2. **Auth** → Providers → 开启 Email
+3. **Storage** → 创建公开 bucket `article-images`
+4. **SQL Editor** → 执行 `schema.sql`
 
 ---
 
 ## 🖥️ 后台管理
 
-| 页面 | 路径 | 功能 |
-|------|------|------|
-| **控制台** | `/admin` | 数据统计、快捷操作、最近文章 |
-| **写文章** | `/admin/create` | Markdown 编辑器 + 工具栏 |
-| **文章管理** | `/admin/articles` | 分页、搜索、分类筛选、编辑/删除 |
-| **图片管理** | `/admin/images` | 上传 / 裁剪 / 删除，显示使用场景 |
-| **个人信息** | `/admin/settings` | 头像、简介、社交链接、视差背景 |
+```
+/admin          ─ 控制台（数据统计 + 最近文章）
+/admin/create   ─ 写文章（Markdown 编辑器）
+/admin/articles ─ 文章管理（搜索 / 分页 / 分类筛选）
+/admin/images   ─ 图片管理（上传 / 裁剪 / 删除）
+/admin/settings ─ 个人信息（头像 / 简介 / 社交 / 视差背景）
+```
 
-### API 路由
+### API 路由一览
 
-| 路径 | 方法 | 用途 |
+| 方法 | 路径 | 用途 |
 |------|------|------|
-| `/api/article` | POST/PUT/DELETE | 文章 CRUD |
-| `/api/article/[id]/like` | GET/POST | 点赞 |
-| `/api/profile` | GET/PUT | 个人信息 |
-| `/api/storage` | DELETE | 删除图片 |
-| `/api/chat` | POST | AI 聊天（SSE 流式） |
-| `/api/auth/set-cookie` | POST | 登录会话 |
+| `GET/POST/PUT/DELETE` | `/api/article` | 文章 CRUD |
+| `GET/POST` | `/api/article/[id]/like` | 点赞 |
+| `GET/PUT` | `/api/profile` | 个人信息 |
+| `POST` | `/api/chat` | AI 聊天 (SSE) |
+| `POST` | `/api/auth/set-cookie` | 登录会话 |
+| `DELETE` | `/api/storage` | 删除图片 |
 
 ---
 
-## 🌟 功能展示
+## 📁 项目结构
 
-### 首页视差效果
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── admin/              # 后台管理（受保护）
+│   ├── article/[id]/       # 文章详情
+│   ├── category/           # 分类归档
+│   ├── login/              # 登录页
+│   ├── ai-chat/            # AI 聊天
+│   └── api/                # API 路由
+├── components/
+│   ├── layout/             # 布局组件（Navbar, Header, Sidebar, Footer）
+│   ├── article/            # 文章组件（Content, TOC, Search, Tags）
+│   ├── common/             # 通用组件（LikeButton, ImageCropper, Cards）
+│   ├── chat/               # AI 聊天组件
+│   └── admin/              # 管理后台组件
+├── lib/                    # 工具库（Supabase 客户端, 上传）
+├── types/                  # TypeScript 类型
+└── middleware.ts           # Supabase 认证中间件
+```
 
-动态 parallax 背景跟随滚动，鼠标悬停产生 3D 倾斜 + 移动视差，支持自定义背景图、标题、副标题。
+---
+
+## 🌟 功能亮点
+
+### 首頁视差效果
+
+背景图随滚动偏移，鼠标悬停产生 3D 旋转 + 位移视差。支持通过后台自定义背景、标题和副标题，留空则自动隐藏。
 
 ### AI 聊天
 
-- **浮动模式**：页面右下角可拖拽气泡，随时提问
-- **全屏模式**：`/ai-chat/fullscreen`，历史记录、编辑消息、导出 Markdown、重试
-- 基于智谱 GLM-4-Flash 模型，流式输出
+| 模式 | 入口 | 特性 |
+|------|------|------|
+| 💬 浮动 | 页面右下角气泡 | 可拖拽，随时提问 |
+| 🖥️ 全屏 | `/ai-chat/fullscreen` | 历史记录 / 编辑消息 / 导出 Markdown / 重试 |
+
+基于智谱 GLM-4-Flash 模型，SSE 流式实时输出。
 
 ### 文章阅读体验
 
-- 顶部 **阅读进度条**
-- 可拖拽 **目录**（支持固定/浮动切换）
-- 代码块 **语法高亮**（highlight.js GitHub Dark 主题）
-- 响应式 **点赞** 按钮
+- 📊 顶部 **阅读进度条**
+- 📑 可拖拽 **目录导航**（支持固定/浮动切换）
+- 🎨 代码块 **语法高亮**（highlight.js GitHub Dark）
+- ❤️ 响应式 **点赞按钮**（带动画）
 
 ---
 
 ## 📦 构建部署
 
 ```bash
-# 构建
-npm run build
-
-# 启动
-npm start
-
-# 代码检查
-npm run lint
+npm run build    # 构建
+npm start        # 启动
+npm run lint     # 代码检查
 ```
 
-推荐部署到 [Vercel](https://vercel.com)（零配置，自动识别 Next.js）。
+推荐部署到 [Vercel](https://vercel.com)，零配置自动识别 Next.js。
 
 ---
 
-## 📄 许可证
-
-[MIT](./LICENSE)
+<div align="center">
+  <br/>
+  <sub>Built with ❤️ using Next.js & Supabase</sub>
+  <br/>
+  <br/>
+  <a href="https://github.com/xianshi3/Reality-Blog">
+    <img src="https://img.shields.io/badge/View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
+  </a>
+  <br/>
+  <br/>
+</div>
