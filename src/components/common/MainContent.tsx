@@ -59,34 +59,29 @@ export default function MainContent({
         }
       >
         {/* 统一 grid，不再分年份 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="md:columns-2 columns-1 gap-x-6">
 
           {articles.map((article) => (
-            <div key={article.link} className="flex">
+            <div key={article.link} className="break-inside-avoid mb-6">
               <Link
                 href={article.link}
-                className="article-item group flex flex-col h-full w-full overflow-hidden"
+                className="article-item group flex flex-col w-full overflow-hidden"
               >
 
                 {/* 封面图 */}
                 {article.image_url && (
-                  <div className="relative h-40 md:h-48 w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center blur-xl rounded-xl"
-                      style={{ backgroundImage: `url(${article.image_url})` }}
-                    />
-                    <div className="absolute inset-0 bg-white/30 dark:bg-black/30 rounded-xl" />
+                  <div className="w-full overflow-hidden rounded-xl bg-gray-50 dark:bg-[#1e2128] p-3">
                     <img
                       src={article.image_url}
                       alt={article.title}
-                      className="relative w-full h-full object-contain rounded-xl"
+                      className="w-full h-auto object-contain rounded-lg shadow-sm"
                       loading="lazy"
                     />
                   </div>
                 )}
 
                 {/* 文章内容 */}
-                <div className="flex flex-col flex-1 mt-4">
+                <div className="flex flex-col mt-4">
 
                   {/* 标题 + 分类 */}
                   <div className="flex items-start gap-2 mb-2">
@@ -120,7 +115,7 @@ export default function MainContent({
                   )}
 
                   {/* 底部信息 */}
-                  <div className="mt-auto flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                  <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
                     <span>
                       {article.date
                         ? new Date(article.date).toLocaleDateString("zh-CN", {
