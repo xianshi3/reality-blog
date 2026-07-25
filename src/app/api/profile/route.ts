@@ -8,6 +8,9 @@ const DEFAULT_PROFILE = {
   avatar_url: '/avatar.png',
   github_url: 'https://github.com/xianshi3',
   twitter_url: 'https://x.com/xianshi_3',
+  parallax_image_url: '/parallax-bg.png',
+  parallax_title: 'Reality Blog',
+  parallax_subtitle: '探索技术与世界的边界',
 };
 
 export async function GET() {

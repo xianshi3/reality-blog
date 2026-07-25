@@ -10,6 +10,9 @@ interface Profile {
   avatar_url: string;
   github_url: string;
   twitter_url: string;
+  parallax_image_url: string;
+  parallax_title: string;
+  parallax_subtitle: string;
 }
 
 export default function SettingsPage() {
@@ -19,11 +22,15 @@ export default function SettingsPage() {
     avatar_url: "",
     github_url: "",
     twitter_url: "",
+    parallax_image_url: "",
+    parallax_title: "",
+    parallax_subtitle: "",
   });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const parallaxInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -35,16 +42,14 @@ export default function SettingsPage() {
       .catch((err) => setError(err.message));
   }, []);
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleUpload = async (file: File, field: "avatar_url" | "parallax_image_url") => {
     try {
       const url = await uploadImage(file);
-      setProfile((prev) => ({ ...prev, avatar_url: url }));
-      setMessage("头像上传成功");
+      setProfile((prev) => ({ ...prev, [field]: url }));
+      setMessage(field === "avatar_url" ? "头像上传成功" : "背景图上传成功");
       setError("");
     } catch (err) {
-      setError("头像上传失败");
+      setError("上传失败");
     }
   };
 
@@ -73,6 +78,7 @@ export default function SettingsPage() {
       <h1 className="admin-page-title">个人信息设置</h1>
 
       <div className="admin-card" style={{ maxWidth: 600 }}>
+        <h2 className="admin-section-title">头像</h2>
         <div className="mb-6 flex flex-col items-center">
           <div className="relative mb-3">
             <img
@@ -83,20 +89,20 @@ export default function SettingsPage() {
           </div>
           <input
             type="file"
-            ref={fileInputRef}
+            ref={avatarInputRef}
             accept="image/*"
             className="hidden"
-            onChange={handleAvatarUpload}
+            onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], "avatar_url")}
           />
           <button
             className="admin-btn admin-btn-secondary"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => avatarInputRef.current?.click()}
           >
             <FaUpload /> 上传头像
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 mb-8">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">名称</label>
             <input
@@ -138,15 +144,69 @@ export default function SettingsPage() {
           </div>
         </div>
 
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mb-8">
+          <h2 className="admin-section-title mb-4">首页视差背景</h2>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">背景图</label>
+            <div className="flex items-center gap-4">
+              <div className="w-32 h-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                {profile.parallax_image_url && (
+                  <img
+                    src={profile.parallax_image_url}
+                    alt="背景图预览"
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+              <input
+                type="file"
+                ref={parallaxInputRef}
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], "parallax_image_url")}
+              />
+              <button
+                className="admin-btn admin-btn-secondary"
+                onClick={() => parallaxInputRef.current?.click()}
+              >
+                <FaUpload /> 上传背景图
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">标题</label>
+              <input
+                type="text"
+                value={profile.parallax_title}
+                onChange={(e) => setProfile((p) => ({ ...p, parallax_title: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1a1d24] text-gray-900 dark:text-gray-100"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">副标题</label>
+              <input
+                type="text"
+                value={profile.parallax_subtitle}
+                onChange={(e) => setProfile((p) => ({ ...p, parallax_subtitle: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1a1d24] text-gray-900 dark:text-gray-100"
+              />
+            </div>
+          </div>
+        </div>
+
         {error && (
-          <p className="mt-4 text-sm text-red-500">{error}</p>
+          <p className="text-sm text-red-500">{error}</p>
         )}
         {message && !error && (
-          <p className="mt-4 text-sm text-green-500">{message}</p>
+          <p className="text-sm text-green-500">{message}</p>
         )}
 
         <button
-          className="admin-btn admin-btn-primary mt-6"
+          className="admin-btn admin-btn-primary mt-4"
           onClick={handleSave}
           disabled={saving}
         >

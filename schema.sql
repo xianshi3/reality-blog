@@ -41,6 +41,9 @@ CREATE TABLE IF NOT EXISTS public.profile (
   avatar_url text NOT NULL DEFAULT '/avatar.png',
   github_url text NOT NULL DEFAULT 'https://github.com/xianshi3',
   twitter_url text NOT NULL DEFAULT 'https://x.com/xianshi_3',
+  parallax_image_url text NOT NULL DEFAULT '/parallax-bg.png',
+  parallax_title text NOT NULL DEFAULT 'Reality Blog',
+  parallax_subtitle text NOT NULL DEFAULT '探索技术与世界的边界',
   updated_at timestamp with time zone DEFAULT now(),
   CONSTRAINT profile_pkey PRIMARY KEY (id)
 );
@@ -57,8 +60,8 @@ CREATE POLICY "profile_update_auth" ON public.profile
   FOR UPDATE USING (auth.role() = 'authenticated');
 
 -- 插入默认个人信息
-INSERT INTO public.profile (id, name, title, avatar_url, github_url, twitter_url)
-VALUES (1, 'Reality', 'Full Stack Developer', '/avatar.png', 'https://github.com/xianshi3', 'https://x.com/xianshi_3')
+INSERT INTO public.profile (id, name, title, avatar_url, github_url, twitter_url, parallax_image_url, parallax_title, parallax_subtitle)
+VALUES (1, 'Reality', 'Full Stack Developer', '/avatar.png', 'https://github.com/xianshi3', 'https://x.com/xianshi_3', '/parallax-bg.png', 'Reality Blog', '探索技术与世界的边界')
 ON CONFLICT (id) DO NOTHING;
 
 -- ==================== 存储桶 ====================
