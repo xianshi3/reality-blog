@@ -8,13 +8,16 @@ import { FaPenToSquare, FaTrashCan, FaFileLines } from "react-icons/fa6";
 export default function ArticleItem({
   article,
   delay = 0,
+  showImage,
 }: {
-  article: { id: string; title: string; date?: string };
+  article: { id: string; title: string; date?: string; image_url?: string };
   delay?: number;
+  showImage?: boolean;
 }) {
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const handleDelete = async () => {
     const confirmDelete = confirm(`确定要删除文章「${article.title}」吗？`);
@@ -48,7 +51,20 @@ export default function ArticleItem({
 
   return (
     <li className="admin-list-item" style={{ animationDelay: `${delay}ms` }}>
-      <div>
+      {showImage && (
+        <div className="admin-article-thumb">
+          {article.image_url && !imgError ? (
+            <img
+              src={article.image_url}
+              alt=""
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <FaFileLines />
+          )}
+        </div>
+      )}
+      <div className="admin-article-info">
         <span className="admin-article-title">
           <FaFileLines style={{ fontSize: "0.75rem", opacity: 0.4, flexShrink: 0 }} />
           {article.title}

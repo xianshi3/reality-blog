@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { FaTrashCan } from "react-icons/fa6";
+import { uploadImage } from "@/lib/upload";
+import { FaTrashCan, FaImages, FaUpload, FaUser, FaImage } from "react-icons/fa6";
 import "./images.css";
 
 interface ImageItem {
@@ -10,13 +11,14 @@ interface ImageItem {
   size?: number;
   publicUrl: string;
   article?: { id: number; title: string } | null;
+  usage?: string;
 }
 
 function ImageSkeleton() {
   return (
-    <div className="image-loading">
+    <div className="image-grid">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="image-skeleton" />
+        <div key={i} className="admin-skeleton" style={{ height: 210, borderRadius: 10 }} />
       ))}
     </div>
   );
@@ -26,6 +28,8 @@ export default function ImageManagerPage() {
   const [images, setImages] = useState<ImageItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -52,9 +56,15 @@ export default function ImageManagerPage() {
         /\.(jpg|jpeg|png|webp|gif)$/i.test(item.name)
       );
 
-      const { data: articlesData } = await supabase
-        .from("articles")
-        .select("id, title, image_url");
+      const [{ data: articlesData }, { data: profileData }] = await Promise.all([
+        supabase.from("articles").select("id, title, image_url"),
+        supabase.from("profile").select("avatar_url, parallax_image_url").single(),
+      ]);
+
+      const profile = profileData as { avatar_url?: string; parallax_image_url?: string } | null;
+
+      const avatarName = profile?.avatar_url?.split("/").pop();
+      const parallaxName = profile?.parallax_image_url?.split("/").pop();
 
       const imgs: ImageItem[] = files.map((item) => {
         const { data: urlData } = supabase.storage
@@ -67,6 +77,10 @@ export default function ImageManagerPage() {
           return artFileName === item.name;
         });
 
+        let usage: string | undefined;
+        if (item.name === avatarName) usage = "头像";
+        else if (item.name === parallaxName) usage = "视差背景";
+
         return {
           name: item.name,
           publicUrl: urlData.publicUrl,
@@ -74,6 +88,7 @@ export default function ImageManagerPage() {
           article: relatedArticle
             ? { id: relatedArticle.id, title: relatedArticle.title }
             : null,
+          usage,
         };
       });
 
@@ -124,30 +139,66 @@ export default function ImageManagerPage() {
     }
   };
 
+  const handleUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const url = await uploadImage(file);
+      const name = url.split("/").pop()!;
+      const { data: urlData } = supabase.storage.from("article-images").getPublicUrl(name);
+      setImages((prev) => [{ name, publicUrl: urlData.publicUrl, article: null }, ...prev]);
+    } catch (err) {
+      alert("上传失败");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div>
-      <h1 className="admin-page-title">
-        <span>🖼️</span>图片管理
-        {!loading && <span className="admin-stat-label" style={{ fontSize: "0.8rem", fontWeight: 400 }}>({images.length})</span>}
-      </h1>
+      <div className="admin-page-title">
+        <FaImages /> 图片管理
+        {!loading && <span className="admin-stat-label" style={{ fontSize: "0.8rem", fontWeight: 400, marginLeft: 4 }}>({images.length})</span>}
+      </div>
+
+      <div className="mb-4">
+        <button
+          className="admin-btn admin-btn-secondary"
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+        >
+          <FaUpload /> {uploading ? "上传中..." : "上传图片"}
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])}
+        />
+      </div>
 
       {loading ? (
         <ImageSkeleton />
       ) : images.length === 0 ? (
-        <p className="image-empty">
-          <span style={{ fontSize: "2rem", display: "block", marginBottom: "0.5rem" }}>🖼️</span>
-          暂无图片
-        </p>
+        <div className="admin-empty">
+          <FaImages style={{ fontSize: "2.5rem", display: "block", margin: "0 auto 0.5rem" }} />
+          <p>暂无图片</p>
+        </div>
       ) : (
         <div className="image-grid">
-          {images.map(({ publicUrl, size, name, article }, idx) => (
+          {images.map(({ publicUrl, size, name, article, usage }, idx) => (
             <div
               key={publicUrl}
-              className="image-card"
+              className={`image-card ${usage === "头像" ? "image-card-avatar" : ""} ${usage === "视差背景" ? "image-card-parallax" : ""}`}
               style={{ animationDelay: `${idx * 30}ms` }}
               title={article?.title || "未关联文章"}
             >
               <img src={publicUrl} alt={article?.title || "文章封面"} loading="lazy" />
+              {usage && (
+                <span className="image-usage-badge">
+                  {usage === "头像" ? <FaUser /> : <FaImage />} {usage}
+                </span>
+              )}
               <div className="image-info">
                 <p className="image-title">{article?.title || "未关联文章"}</p>
                 {size && <span className="image-size">{formatSize(size)}</span>}

@@ -41,6 +41,13 @@ export default async function Home() {
     .order('date', { ascending: false })
     .range(from, to);
 
+  // 拉取视差背景数据
+  const { data: profile } = await supabase
+    .from('profile')
+    .select('parallax_image_url, parallax_title, parallax_subtitle')
+    .eq('id', 1)
+    .maybeSingle();
+
   // 错误处理：返回错误组件
   if (error) {
     return <ErrorDisplay status={status} message={error.message} />;
@@ -63,7 +70,11 @@ export default async function Home() {
   return (
     <div className="home-container">
       {/* 顶部导航栏 */}
-      <Header />
+      <Header
+        parallaxImage={profile?.parallax_image_url || "/parallax-bg.png"}
+        parallaxTitle={profile?.parallax_title ?? ""}
+        parallaxSubtitle={profile?.parallax_subtitle ?? ""}
+      />
 
       {/* 主体区域：左侧栏 + 文章内容 + 右侧栏 */}
       <main className="container-home">

@@ -1,11 +1,15 @@
 "use client";
 
 import "../../editor.css";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { uploadImage } from "@/lib/upload";
 import { supabase } from "@/lib/supabaseClient";
-import { FaBold, FaItalic, FaHeading, FaCode, FaListOl, FaListUl, FaImage } from "react-icons/fa6";
+import {
+  FaBold, FaItalic, FaHeading, FaCode, FaListOl, FaListUl, FaImage,
+  FaPenToSquare, FaUpload, FaTags, FaCalendar, FaFileLines, FaFolder,
+  FaCheck,
+} from "react-icons/fa6";
 
 const TOOLBAR_ACTIONS = [
   { label: "标题 1", icon: FaHeading, markdown: "# " },
@@ -34,16 +38,20 @@ interface ArticleData {
 function LoadingSkeleton() {
   return (
     <div className="editor-page">
+      <div className="editor-header">
+        <div className="admin-skeleton" style={{ width: 140, height: 28, borderRadius: 6 }} />
+        <div className="admin-skeleton" style={{ width: 110, height: 38, borderRadius: 8 }} />
+      </div>
       <div className="editor-body">
         <div className="editor-main">
-          <div className="skeleton skeleton-title" />
-          <div className="skeleton skeleton-toolbar" />
-          <div className="skeleton skeleton-textarea" />
+          <div className="admin-skeleton" style={{ height: 48, borderRadius: 6 }} />
+          <div className="admin-skeleton" style={{ height: 36, borderRadius: 8 }} />
+          <div className="admin-skeleton" style={{ height: 400, borderRadius: 8 }} />
         </div>
         <aside className="editor-sidebar">
-          <div className="skeleton skeleton-card" />
-          <div className="skeleton skeleton-card" />
-          <div className="skeleton skeleton-card" />
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="admin-skeleton" style={{ height: 140, borderRadius: 8 }} />
+          ))}
         </aside>
       </div>
     </div>
@@ -59,6 +67,7 @@ export default function EditArticle() {
   const [saving, setSaving] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     (async () => {
@@ -156,7 +165,7 @@ export default function EditArticle() {
     <div className="editor-page">
       <div className="editor-header">
         <h1 className="admin-page-title">
-          <span>📝</span>编辑文章
+          <FaPenToSquare /> 编辑文章
         </h1>
         <button
           className="editor-submit-btn"
@@ -166,7 +175,7 @@ export default function EditArticle() {
           {saving ? (
             <><span className="btn-spinner" />保存中...</>
           ) : (
-            "保存修改"
+            <><FaCheck /> 保存修改</>
           )}
         </button>
       </div>
@@ -206,19 +215,23 @@ export default function EditArticle() {
         </div>
 
         <aside className="editor-sidebar">
-          {/* Cover image */}
           <div className="editor-card">
-            <h3 className="editor-card-title">封面图片</h3>
-            <label className="editor-upload-btn">
-              {uploading ? "上传中..." : imageFile || form.image_url ? "更换图片" : "选择封面图片"}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageSelect}
-                disabled={uploading || saving}
-                hidden
-              />
-            </label>
+            <h3 className="editor-card-title"><FaImage /> 封面图片</h3>
+            <button
+              className="editor-upload-btn"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading || saving}
+            >
+              <FaUpload /> {uploading ? "上传中..." : previewUrl ? "更换图片" : "选择封面图片"}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageSelect}
+              disabled={uploading || saving}
+              hidden
+            />
             {previewUrl && (
               <div className="editor-preview-wrap">
                 <img src={previewUrl} alt="封面预览" className="editor-preview-img" />
@@ -226,9 +239,8 @@ export default function EditArticle() {
             )}
           </div>
 
-          {/* Basic info */}
           <div className="editor-card">
-            <h3 className="editor-card-title">基本信息</h3>
+            <h3 className="editor-card-title"><FaFileLines /> 基本信息</h3>
             <div className="editor-field">
               <label className="editor-field-label">摘要</label>
               <input
@@ -239,7 +251,7 @@ export default function EditArticle() {
               />
             </div>
             <div className="editor-field">
-              <label className="editor-field-label">分类</label>
+              <label className="editor-field-label"><FaFolder /> 分类</label>
               <input
                 className="editor-field-input"
                 placeholder="如：技术、生活、教程"
@@ -249,9 +261,8 @@ export default function EditArticle() {
             </div>
           </div>
 
-          {/* Metadata */}
           <div className="editor-card">
-            <h3 className="editor-card-title">元数据</h3>
+            <h3 className="editor-card-title"><FaTags /> 元数据</h3>
             <div className="editor-field">
               <label className="editor-field-label">标签</label>
               <input
@@ -262,7 +273,7 @@ export default function EditArticle() {
               />
             </div>
             <div className="editor-field">
-              <label className="editor-field-label">发布日期</label>
+              <label className="editor-field-label"><FaCalendar /> 发布日期</label>
               <input
                 className="editor-field-input"
                 type="date"

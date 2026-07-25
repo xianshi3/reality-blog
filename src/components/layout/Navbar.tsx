@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import ThemeToggle from "@/components/common/ThemeToggle";
+import { useState, useEffect, useRef } from "react";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import {
   FiHome,
   FiGrid,
@@ -13,6 +13,30 @@ import {
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const prevScrollRef = useRef(0);
+
+  useEffect(() => {
+    prevScrollRef.current = window.scrollY;
+
+    const handleScroll = () => {
+      const current = window.scrollY;
+      const delta = current - prevScrollRef.current;
+
+      if (current <= 0) {
+        setHidden(false);
+      } else if (delta > 5) {
+        setHidden(true);
+      } else if (delta < -5) {
+        setHidden(false);
+      }
+
+      prevScrollRef.current = current;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { label: "首页", href: "/", icon: <FiHome size={16} /> },
@@ -21,7 +45,10 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white/60 supports-backdrop-blur:bg-white/60 backdrop-blur-lg shadow-lg z-50 dark:bg-gray-900/60 dark:supports-backdrop-blur:bg-gray-900/60">
+    <nav
+      className="fixed top-0 left-0 right-0 bg-white/60 supports-backdrop-blur:bg-white/60 backdrop-blur-lg shadow-lg z-50 dark:bg-gray-900/60 dark:supports-backdrop-blur:bg-gray-900/60 transition-transform duration-300"
+      style={{ transform: hidden ? "translateY(-100%)" : "translateY(0)" }}
+    >
       <div className="container mx-auto flex justify-between items-center py-3 px-4 sm:py-4 sm:px-6">
         
         {/* Logo */}
