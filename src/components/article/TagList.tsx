@@ -57,8 +57,8 @@ function TagItem({
         inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full
         bg-gray-100 dark:bg-gray-700
         text-gray-700 dark:text-gray-200
-        hover:bg-blue-500 hover:text-white
-        dark:hover:bg-blue-500 dark:hover:text-white
+        hover:bg-gray-200 dark:hover:bg-gray-600
+        hover:text-gray-900 dark:hover:text-white
         transition-colors duration-200
         cursor-pointer
         whitespace-nowrap
@@ -104,12 +104,11 @@ export default function TagList({ tags }: TagListProps) {
               whileTap={{ scale: 0.97 }}
               className="
                 inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full
-                bg-gray-200 dark:bg-gray-600
-                text-gray-600 dark:text-gray-300
-                hover:bg-gray-300 dark:hover:bg-gray-500
+                bg-gray-100 dark:bg-gray-700
+                text-gray-500 dark:text-gray-400
+                hover:bg-gray-200 dark:hover:bg-gray-600
                 transition-colors duration-200
                 cursor-pointer
-                shadow-sm
               "
             >
               {isExpanded ? (

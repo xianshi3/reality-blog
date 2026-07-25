@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
+import Link from 'next/link';
 import Header from '@/components/layout/Header';
-import LeftSidebar from '@/components/layout/LeftSidebar';
 import MainContent from '@/components/common/MainContent';
 import RightSidebar from '@/components/layout/RightSidebar';
 import Footer from '@/components/layout/Footer';
@@ -76,24 +76,40 @@ export default async function Home() {
         parallaxSubtitle={profile?.parallax_subtitle ?? ""}
       />
 
-      {/* 主体区域：左侧栏 + 文章内容 + 右侧栏 */}
+      {/* 主体区域：文章内容 + 右侧栏 */}
       <main className="container-home">
-        <LeftSidebar
-          className="w-60 flex-shrink-0"
-          articles={articles}
-          totalCount={count ?? 0}
-        />
         <MainContent
           className="flex-1 min-w-0"
           articles={articles}
           currentPage={page}
-          totalPages={totalPages}
         />
         <RightSidebar
-          className="w-60 flex-shrink-0"
+          className="w-72 flex-shrink-0"
           articles={articles}
         />
       </main>
+
+      {/* 分页 - 居中显示 */}
+      {totalPages > 1 && (
+        <nav aria-label="分页导航" className="pagination" style={{ marginTop: 0, marginBottom: '3rem' }}>
+          {page > 1 && (
+            <Link href={`/?page=${page - 1}`}>上一页</Link>
+          )}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <Link
+              key={p}
+              href={`/?page=${p}`}
+              className={p === page ? "active" : ""}
+              aria-current={p === page ? "page" : undefined}
+            >
+              {p}
+            </Link>
+          ))}
+          {page < totalPages && (
+            <Link href={`/?page=${page + 1}`}>下一页</Link>
+          )}
+        </nav>
+      )}
 
       {/* 底部固定 AI 聊天组件 */}
       <div className="fixed bottom-4 left-4 right-4 sm:right-auto z-50 max-w-[350px] w-full sm:w-[350px]">

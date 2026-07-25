@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import TechStackCard from "@/components/common/TechStackCard";
+import SearchCard from "@/components/common/SearchCard";
 import TagCard from "@/components/article/TagCard";
 import { FaUser, FaGithub, FaXTwitter } from "react-icons/fa6";
 import type { Article } from "@/types/article";
@@ -35,7 +35,7 @@ export default function RightSidebar({
   }, []);
 
   const cardClass =
-    "relative bg-white/70 dark:bg-[#23272f]/70 backdrop-blur-md border border-white/40 dark:border-gray-700/40 rounded-2xl shadow-lg p-6 transition-all duration-300 ease-in-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl";
+    "bg-white dark:bg-[#23272f] border border-gray-100 dark:border-gray-800 rounded-2xl shadow-lg p-6 transition-all duration-300 ease-in-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl";
 
   const p = profile;
 
@@ -44,16 +44,11 @@ export default function RightSidebar({
 
       <div className={`${cardClass} flex flex-col items-center text-center`}>
 
-        <div className="mb-4 p-1 rounded-2xl bg-gradient-to-br from-white/40 to-white/10 dark:from-white/10 dark:to-white/5 backdrop-blur-md shadow-sm">
-          <Image
+        <div className="mb-4 p-1 rounded-2xl bg-gradient-to-br from-white/40 to-white/10 dark:from-white/10 dark:to-white/5 shadow-sm">
+          <img
             src={p?.avatar_url || "/avatar.png"}
             alt="头像"
-            width={96}
-            height={96}
-            sizes="96px"
-            quality={100}
-            priority
-            className="rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg transition-transform duration-300 hover:scale-105"
+            className="w-24 h-24 rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg transition-transform duration-300 hover:scale-105"
           />
         </div>
 
@@ -73,7 +68,7 @@ export default function RightSidebar({
             href={p?.github_url || "https://github.com/xianshi3"}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-100 dark:hover:bg-blue-800 transition-all duration-300 hover:scale-110 hover:shadow-md"
+            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-110 hover:shadow-md"
           >
             <FaGithub className="w-5 h-5" />
           </a>
@@ -82,14 +77,16 @@ export default function RightSidebar({
             href={p?.twitter_url || "https://x.com/xianshi_3"}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-100 dark:hover:bg-blue-800 transition-all duration-300 hover:scale-110 hover:shadow-md"
+            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-110 hover:shadow-md"
           >
             <FaXTwitter className="w-5 h-5" />
           </a>
         </div>
       </div>
 
-      <TechStackCard />
+      <TechStackCard articles={articles} />
+
+      <SearchCard articles={articles} />
 
       <TagCard articles={articles} />
 
