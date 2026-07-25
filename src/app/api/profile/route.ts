@@ -38,11 +38,11 @@ export async function PUT(req: Request) {
   try {
     const supabase = await createServerSupabase();
     const body = await req.json();
-    const { id, ...updateData } = body;
+    const { id, updated_at, ...updateData } = body;
 
     const { data, error } = await supabase
       .from('profile')
-      .upsert({ id: 1, ...updateData })
+      .upsert({ id: 1, ...updateData, updated_at: new Date().toISOString() })
       .select()
       .single();
 
