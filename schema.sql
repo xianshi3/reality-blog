@@ -68,3 +68,10 @@ ON CONFLICT (id) DO NOTHING;
 -- 在 Supabase Dashboard → Storage 手动创建 article-images 桶
 -- 或者执行下方 SQL（需要 service_role key，建议在 Dashboard 操作）
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('article-images', 'article-images', true);
+
+-- ==================== 已有数据库升级脚本 ====================
+-- 如果 profile 表已存在但缺少视差字段，执行下方 SQL：
+-- ALTER TABLE public.profile
+--   ADD COLUMN IF NOT EXISTS parallax_image_url text NOT NULL DEFAULT '/parallax-bg.png',
+--   ADD COLUMN IF NOT EXISTS parallax_title text NOT NULL DEFAULT 'Reality Blog',
+--   ADD COLUMN IF NOT EXISTS parallax_subtitle text NOT NULL DEFAULT '探索技术与世界的边界';

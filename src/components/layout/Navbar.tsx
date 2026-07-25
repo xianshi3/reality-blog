@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import ThemeToggle from "@/components/common/ThemeToggle";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import {
   FiHome,
   FiGrid,
