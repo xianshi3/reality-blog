@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { FiHome } from "react-icons/fi";
 
 export default function ReturnHome() {
   const [hidden, setHidden] = useState(false);
@@ -58,7 +59,7 @@ export default function ReturnHome() {
       onPointerCancel={onPointerUp}
       onPointerLeave={onPointerUp}
     >
-      <span className="text-lg">←</span>
+      <FiHome className="text-base" />
       <span>返回首页</span>
     </Link>
   );

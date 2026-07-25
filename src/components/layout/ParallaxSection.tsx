@@ -19,11 +19,12 @@ export default function ParallaxSection({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [isAtTop, setIsAtTop] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
 
   // 判断是否为移动端
   useEffect(() => {
+    setIsMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -34,7 +35,6 @@ export default function ParallaxSection({
   useEffect(() => {
     const handleScroll = () => {
       setOffsetY(window.scrollY);
-      setIsAtTop(window.scrollY < 50);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -188,7 +188,7 @@ export default function ParallaxSection({
       </div>
       
       {/* 自定义鼠标指针 - 替代系统指针 */}
-      {!isMobile && (
+      {isMounted && !isMobile && (
         <div 
           className="absolute z-50 pointer-events-none transition-opacity duration-300"
           style={{
@@ -211,44 +211,6 @@ export default function ParallaxSection({
         </div>
       )}
       
-      {/* 现代滚动指示器 */}
-      {!isMobile && (
-        <div
-          className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 pointer-events-none transition-opacity duration-700`}
-          style={{
-            opacity: isAtTop ? 1 : 0, // 根据是否在顶部显示/隐藏
-          }}
-        >
-          <div className="flex flex-col items-center">
-            <span className="text-xs text-white/80 mb-2 tracking-widest">SCROLL</span>
-            <div className="w-px h-8 bg-white/60 overflow-hidden">
-              <div 
-                className="w-full h-6 bg-white"
-                style={{
-                  animation: "scrollIndicator 2s infinite",
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* 动画样式 */}
-      <style jsx>{`
-        @keyframes scrollIndicator {
-          0% {
-            transform: translateY(-100%);
-            opacity: 0;
-          }
-          50% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(250%);
-            opacity: 0;
-          }
-        }
-      `}</style>
     </div>
   );
 }

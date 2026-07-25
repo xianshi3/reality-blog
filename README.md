@@ -40,62 +40,30 @@
 
 ## 📋 目录
 
-- [特性一览](#-特性一览)
-- [技术栈](#-技术栈)
-- [截图展示](#-截图展示)
-- [快速开始](#-快速开始)
-- [数据库](#-数据库)
-- [后台管理](#-后台管理)
-- [项目结构](#-项目结构)
-- [功能亮点](#-功能亮点)
-- [构建部署](#-构建部署)
+<div align="center">
+
+[特性一览](#-特性一览) · [技术栈](#-技术栈) · [截图展示](#-截图展示) · [快速开始](#-快速开始) · [数据库](#-数据库) · [后台管理](#-后台管理) · [项目结构](#-项目结构) · [功能亮点](#-功能亮点) · [构建部署](#-构建部署)
+
+</div>
 
 ---
 
 ## ✨ 特性一览
 
-<table>
-  <thead>
-    <tr>
-      <th width="200">特性</th>
-      <th>描述</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><img src="https://img.shields.io/badge/Markdown-000000?style=flat-square&logo=markdown&logoColor=white"/> 写作</td>
-      <td>全功能 Markdown 编辑器，工具栏一键插入标题、列表、代码块、图片语法</td>
-    </tr>
-    <tr>
-      <td><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white"/> 后台管理</td>
-      <td>控制台统计、文章管理（搜索/分页/分类筛选）、图片管理、个人信息设置</td>
-    </tr>
-    <tr>
-      <td><img src="https://img.shields.io/badge/ZhipuAI-3859FF?style=flat-square&logoColor=white"/> AI 聊天</td>
-      <td>集成智谱 GLM-4-Flash 模型，浮动气泡 + 全屏双模式，流式输出</td>
-    </tr>
-    <tr>
-      <td><img src="https://img.shields.io/badge/dynamic-6366f1?style=flat-square&label=Parallax&labelColor=6366f1&color=6366f1"/> 视差首页</td>
-      <td>动态视差滚动背景 + 鼠标 3D 倾斜交互，支持自定义背景图与标题</td>
-    </tr>
-    <tr>
-      <td><img src="https://img.shields.io/badge/Framer-0055FF?style=flat-square&logo=framer&logoColor=white"/> 动画</td>
-      <td>页面过渡动画、卡片悬停效果、视差滚动、点赞微交互</td>
-    </tr>
-    <tr>
-      <td><img src="https://img.shields.io/badge/dark_mode-000000?style=flat-square&logo=darkreader&logoColor=white"/> 深色模式</td>
-      <td>系统自动感知 + 手动切换，inline script 防 FOUC，全站适配</td>
-    </tr>
-    <tr>
-      <td><img src="https://img.shields.io/badge/responsive-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white"/> 响应式</td>
-      <td>桌面 / 平板 / 手机全尺寸适配，移动端侧栏抽屉菜单</td>
-    </tr>
-    <tr>
-      <td><img src="https://img.shields.io/badge/Image_Crop-000000?style=flat-square&logo=canvas&logoColor=white"/> 图片裁剪</td>
-      <td>上传前裁剪：头像 1:1 正方形，视差背景 21:9 宽屏</td>
-    </tr>
-  </tbody>
-</table>
+<div align="center">
+
+| 特性 | 描述 |
+|------|------|
+| <img src="https://img.shields.io/badge/Markdown-000000?style=flat-square&logo=markdown&logoColor=white"/> 写作 | 全功能 Markdown 编辑器，工具栏一键插入标题、列表、代码块、图片语法 |
+| <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white"/> 后台管理 | 控制台统计、文章管理（搜索/分页/分类筛选）、图片管理、个人信息设置 |
+| <img src="https://img.shields.io/badge/ZhipuAI-3859FF?style=flat-square&logoColor=white"/> AI 聊天 | 集成智谱 GLM-4-Flash 模型，浮动气泡 + 全屏双模式，流式输出 |
+| <img src="https://img.shields.io/badge/dynamic-6366f1?style=flat-square&label=Parallax&labelColor=6366f1&color=6366f1"/> 视差首页 | 动态视差滚动背景 + 鼠标 3D 倾斜交互，支持自定义背景图与标题 |
+| <img src="https://img.shields.io/badge/Framer-0055FF?style=flat-square&logo=framer&logoColor=white"/> 动画 | 页面过渡动画、卡片悬停效果、视差滚动、点赞微交互 |
+| <img src="https://img.shields.io/badge/dark_mode-000000?style=flat-square&logo=darkreader&logoColor=white"/> 深色模式 | 系统自动感知 + 手动切换，inline script 防 FOUC，全站适配 |
+| <img src="https://img.shields.io/badge/responsive-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white"/> 响应式 | 桌面 / 平板 / 手机全尺寸适配，移动端侧栏抽屉菜单 |
+| <img src="https://img.shields.io/badge/Image_Crop-000000?style=flat-square&logo=canvas&logoColor=white"/> 图片裁剪 | 上传前裁剪：头像 1:1 正方形，视差背景 21:9 宽屏 |
+
+</div>
 
 ---
 
@@ -130,6 +98,8 @@
   <br/>
 </div>
 
+<div align="center">
+
 | 分类 | 技术 |
 |------|------|
 | **框架** | Next.js 16 (App Router, Turbopack) + React 19 + TypeScript 5 |
@@ -141,6 +111,8 @@
 | **图片** | react-easy-crop (裁剪) + Supabase Storage (存储) |
 | **图标** | react-icons (Font Awesome 6) |
 | **代码高亮** | highlight.js (GitHub Dark) |
+
+</div>
 
 ---
 
