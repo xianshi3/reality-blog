@@ -1,13 +1,22 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import TechStackCard from "@/components/common/TechStackCard";
 import TagCard from "@/components/article/TagCard";
 import { FaUser, FaGithub, FaXTwitter } from "react-icons/fa6";
 import type { Article } from "@/types/article";
 
+interface Profile {
+  name: string;
+  title: string;
+  avatar_url: string;
+  github_url: string;
+  twitter_url: string;
+}
+
 interface RightSidebarProps {
-  articles: Article[]; 
+  articles: Article[];
   className?: string;
 }
 
@@ -15,18 +24,29 @@ export default function RightSidebar({
   articles,
   className,
 }: RightSidebarProps) {
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.error) setProfile(data);
+      });
+  }, []);
+
   const cardClass =
     "relative bg-white dark:bg-[#23272f] border border-gray-100 dark:border-gray-800 rounded-2xl shadow-lg p-6 transition-all duration-300 ease-in-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl";
+
+  const p = profile;
 
   return (
     <aside className={`lg:w-72 w-full space-y-6 ${className ?? ""}`}>
 
-      {/* 个人信息卡片 */}
       <div className={`${cardClass} flex flex-col items-center text-center`}>
 
         <div className="mb-4">
           <Image
-            src="/avatar.png"
+            src={p?.avatar_url || "/avatar.png"}
             alt="头像"
             width={96}
             height={96}
@@ -39,18 +59,18 @@ export default function RightSidebar({
 
         <h1 className="flex items-center gap-2 text-xl font-bold text-gray-800 dark:text-white">
           <FaUser className="text-base opacity-80" />
-          Reality
+          {p?.name || "Reality"}
         </h1>
 
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Full Stack Developer
+          {p?.title || "Full Stack Developer"}
         </p>
 
         <div className="w-full h-px bg-gray-200 dark:bg-gray-700 my-4" />
 
         <div className="flex justify-center gap-4">
           <a
-            href="https://github.com/xianshi3"
+            href={p?.github_url || "https://github.com/xianshi3"}
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-100 dark:hover:bg-blue-800 transition-all duration-300 hover:scale-110 hover:shadow-md"
@@ -59,7 +79,7 @@ export default function RightSidebar({
           </a>
 
           <a
-            href="https://x.com/xianshi_3"
+            href={p?.twitter_url || "https://x.com/xianshi_3"}
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-100 dark:hover:bg-blue-800 transition-all duration-300 hover:scale-110 hover:shadow-md"
@@ -69,10 +89,8 @@ export default function RightSidebar({
         </div>
       </div>
 
-      {/* 技术栈 */}
       <TechStackCard />
 
-      {/* 标签组件 */}
       <TagCard articles={articles} />
 
     </aside>
