@@ -28,9 +28,9 @@ const itemVariants = {
     opacity: 1,
     x: 0,
     scale: 1,
-    transition: { duration: 0.2, ease: "easeOut" },
+    transition: { duration: 0.2, ease: "easeOut" as const },
   },
-};
+} as const;
 
 export default function SearchCard({ articles }: SearchCardProps) {
   const router = useRouter();
