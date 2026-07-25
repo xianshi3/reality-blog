@@ -42,6 +42,7 @@
 
 - [特性一览](#-特性一览)
 - [技术栈](#-技术栈)
+- [截图展示](#-截图展示)
 - [快速开始](#-快速开始)
 - [数据库](#-数据库)
 - [后台管理](#-后台管理)
@@ -140,6 +141,24 @@
 | **图片** | react-easy-crop (裁剪) + Supabase Storage (存储) |
 | **图标** | react-icons (Font Awesome 6) |
 | **代码高亮** | highlight.js (GitHub Dark) |
+
+---
+
+## 📸 截图展示
+
+<div align="center">
+  <img width="800" alt="首页" src="https://github.com/user-attachments/assets/2b94da33-2671-4484-9ce2-9c9633c18f6a" />
+  <br/>
+  <sub>🏠 首页 — 视差背景 + 文章列表 + 侧边栏</sub>
+  <br/><br/>
+  <img width="800" alt="文章管理" src="https://github.com/user-attachments/assets/a888e74c-a450-4bdf-82da-0eae6d4a41d5" />
+  <br/>
+  <sub>📝 文章详情 — Markdown 渲染 + 目录 + 阅读进度条 + AI 聊天</sub>
+  <br/><br/>
+  <img width="800" alt="管理后台" src="https://github.com/user-attachments/assets/29dd8d70-bd2f-4079-b3b6-dfd21dcf0fad" />
+  <br/>
+  <sub>⚙️ 管理后台 — 控制台 + 毛玻璃侧边栏</sub>
+</div>
 
 ---
 
