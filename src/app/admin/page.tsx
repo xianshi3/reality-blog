@@ -43,16 +43,19 @@ export default async function AdminPage() {
 
   const totalArticles = count ?? articles?.length ?? 0;
 
-  const { count: categoryCount } = await supabase
+  const { data: categories } = await supabase
     .from("articles")
-    .select("category", { count: "exact", head: true })
+    .select("category")
     .not("category", "is", null);
 
-  const { data: imageList } = await supabase.storage
-    .from("article-images")
-    .list("", { limit: 1000 });
+  const categoryCount = categories
+    ? new Set(categories.map((c) => c.category)).size
+    : 0;
 
-  const totalImages = imageList?.length ?? 0;
+  const { count: totalImages } = await supabase
+    .from("articles")
+    .select("*", { count: "exact", head: true })
+    .not("image_url", "is", null);
 
   const recentArticles = articles?.slice(0, 10) ?? [];
 

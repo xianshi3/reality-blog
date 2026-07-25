@@ -15,10 +15,11 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa6";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import "./admin.css";
 
 const NAV_ITEMS: { href: string; label: string; icon: React.ComponentType; exact?: boolean; disabled?: boolean }[] = [
-  { href: "/admin", label: "控制台", icon: FaGaugeHigh },
+  { href: "/admin", label: "控制台", icon: FaGaugeHigh, exact: true },
   { href: "/admin/create", label: "写文章", icon: FaPenToSquare },
   { href: "/admin/articles", label: "文章管理", icon: FaNewspaper },
   { href: "/admin/images", label: "图片管理", icon: FaImages },
@@ -117,6 +118,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <FaArrowLeft />
               {!collapsed && <span>返回前台</span>}
             </Link>
+            {!collapsed && (
+              <div className="admin-nav-item" style={{ justifyContent: "space-between", cursor: "default" }}>
+                <span>主题</span>
+                <ThemeToggle />
+              </div>
+            )}
             <button className="admin-nav-item admin-collapse-btn" onClick={toggleCollapse} title={collapsed ? "展开" : "收起"}>
               {collapsed ? <FaChevronRight /> : <FaChevronLeft />}
               {!collapsed && <span>收起</span>}
