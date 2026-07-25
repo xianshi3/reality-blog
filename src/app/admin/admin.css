@@ -733,6 +733,186 @@
   color: #9ca3af;
 }
 
+/* ===== Form ===== */
+.admin-form-section {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dark .admin-form-section {
+  border-bottom-color: #252830;
+}
+
+.admin-form-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.admin-form-section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dark .admin-form-section-title {
+  color: #f3f4f6;
+}
+
+.admin-form-group {
+  margin-bottom: 1rem;
+}
+
+.admin-form-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 0.35rem;
+}
+
+.dark .admin-form-label {
+  color: #9ca3af;
+}
+
+.admin-form-input {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.88rem;
+  background: #f9fafb;
+  color: #1f2937;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+
+.dark .admin-form-input {
+  background: #1a1d24;
+  border-color: #374151;
+  color: #f3f4f6;
+}
+
+.admin-form-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  background: #ffffff;
+}
+
+.dark .admin-form-input:focus {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.12);
+  background: #23272f;
+}
+
+.admin-form-input::placeholder {
+  color: #9ca3af;
+}
+
+.dark .admin-form-input::placeholder {
+  color: #6b7280;
+}
+
+/* ===== Upload ===== */
+.admin-upload-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-upload-preview {
+  width: 8rem;
+  height: 5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #f3f4f6;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 0.75rem;
+  border: 1px dashed #d1d5db;
+}
+
+.dark .admin-upload-preview {
+  background: #1a1d24;
+  border-color: #374151;
+}
+
+.admin-upload-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-avatar-preview {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.dark .admin-avatar-preview {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* ===== Messages ===== */
+.admin-message {
+  font-size: 0.85rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  animation: admin-fade-in 0.3s ease both;
+}
+
+.admin-message-success {
+  color: #059669;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+}
+
+.dark .admin-message-success {
+  background: #064e3b;
+  color: #6ee7b7;
+  border-color: #065f46;
+}
+
+.admin-message-error {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.dark .admin-message-error {
+  background: #451a1a;
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}
+
+/* ===== Skeleton ===== */
+.admin-skeleton {
+  background: #e5e7eb;
+  border-radius: 0.5rem;
+  animation: admin-pulse 1.5s ease-in-out infinite;
+}
+
+.dark .admin-skeleton {
+  background: #1f2230;
+}
+
+@keyframes admin-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
 /* ===== Animations ===== */
 @keyframes admin-fade-in {
   from { opacity: 0; }

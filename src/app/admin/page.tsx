@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createServerSupabase } from "@/lib/supabaseServer";
 import ArticleItem from "@/components/article/ArticleItem";
-import { FaPenToSquare, FaImages, FaNewspaper, FaFileLines, FaRocket } from "react-icons/fa6";
+import { FaPenToSquare, FaImages, FaNewspaper, FaFileLines, FaRocket, FaTag } from "react-icons/fa6";
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -24,6 +24,7 @@ export default async function AdminPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="admin-card text-center max-w-md">
+          <FaRocket className="text-4xl text-gray-300 dark:text-gray-600 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400 text-lg mb-4">
             未登录，请先登录
           </p>
@@ -53,6 +54,8 @@ export default async function AdminPage() {
 
   const totalImages = imageList?.length ?? 0;
 
+  const recentArticles = articles?.slice(0, 10) ?? [];
+
   return (
     <div>
       {/* Welcome banner */}
@@ -78,7 +81,7 @@ export default async function AdminPage() {
 
         <div className="admin-stat-card">
           <div className="admin-stat-icon green">
-            <FaPenToSquare />
+            <FaTag />
           </div>
           <div className="admin-stat-info">
             <span className="admin-stat-value">{categoryCount ?? 0}</span>
@@ -100,10 +103,10 @@ export default async function AdminPage() {
       {/* Quick actions */}
       <div className="admin-quick-actions">
         <Link href="/admin/create" className="admin-btn admin-btn-primary">
-          <FaPenToSquare />写新文章
+          <FaPenToSquare /> 写新文章
         </Link>
         <Link href="/admin/images" className="admin-btn admin-btn-secondary">
-          <FaImages />管理图片
+          <FaImages /> 管理图片
         </Link>
       </div>
 
@@ -113,18 +116,21 @@ export default async function AdminPage() {
           <FaNewspaper style={{ marginRight: 4 }} />
           最近文章
         </h2>
-        <ul className="admin-list">
-          {articles?.length ? (
-            articles.map((article, idx) => (
+        {recentArticles.length > 0 ? (
+          <ul className="admin-list">
+            {recentArticles.map((article, idx) => (
               <ArticleItem key={article.id} article={article} delay={idx * 40} />
-            ))
-          ) : (
-            <li className="admin-empty">
-              <span className="admin-empty-icon">📭</span>
-              暂无文章，开始写第一篇吧
-            </li>
-          )}
-        </ul>
+            ))}
+          </ul>
+        ) : (
+          <div className="admin-empty">
+            <span style={{ fontSize: "2.5rem", display: "block", marginBottom: "0.5rem" }}>📝</span>
+            <p>暂无文章，开始写第一篇吧</p>
+            <Link href="/admin/create" className="admin-btn admin-btn-primary" style={{ marginTop: "1rem", display: "inline-flex" }}>
+              <FaPenToSquare /> 写新文章
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

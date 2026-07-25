@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { uploadImage } from "@/lib/upload";
-import { FaCheck, FaUpload } from "react-icons/fa6";
+import { FaCheck, FaUpload, FaUser, FaGear, FaImage } from "react-icons/fa6";
 
 interface Profile {
   name: string;
@@ -15,20 +15,35 @@ interface Profile {
   parallax_subtitle: string;
 }
 
+function SettingsSkeleton() {
+  return (
+    <div>
+      <div className="admin-page-title">
+        <div className="admin-skeleton" style={{ width: 160, height: 28 }} />
+      </div>
+      <div className="admin-card" style={{ maxWidth: 600 }}>
+        <div className="flex flex-col items-center mb-6">
+          <div className="admin-skeleton" style={{ width: 96, height: 96, borderRadius: "50%", marginBottom: 12 }} />
+          <div className="admin-skeleton" style={{ width: 100, height: 32, borderRadius: 8 }} />
+        </div>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="mb-4">
+            <div className="admin-skeleton" style={{ width: 60, height: 14, marginBottom: 6 }} />
+            <div className="admin-skeleton" style={{ width: "100%", height: 38, borderRadius: 8 }} />
+          </div>
+        ))}
+        <div className="admin-skeleton" style={{ width: 120, height: 38, borderRadius: 8, marginTop: 24 }} />
+      </div>
+    </div>
+  );
+}
+
 export default function SettingsPage() {
-  const [profile, setProfile] = useState<Profile>({
-    name: "",
-    title: "",
-    avatar_url: "",
-    github_url: "",
-    twitter_url: "",
-    parallax_image_url: "",
-    parallax_title: "",
-    parallax_subtitle: "",
-  });
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const parallaxInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,13 +54,14 @@ export default function SettingsPage() {
         if (!data.error) setProfile(data);
         else setError(data.error);
       })
-      .catch((err) => setError(err.message));
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   const handleUpload = async (file: File, field: "avatar_url" | "parallax_image_url") => {
     try {
       const url = await uploadImage(file);
-      setProfile((prev) => ({ ...prev, [field]: url }));
+      setProfile((prev) => prev ? { ...prev, [field]: url } : prev);
       setMessage(field === "avatar_url" ? "头像上传成功" : "背景图上传成功");
       setError("");
     } catch (err) {
@@ -54,6 +70,7 @@ export default function SettingsPage() {
   };
 
   const handleSave = async () => {
+    if (!profile) return;
     setSaving(true);
     setMessage("");
     setError("");
@@ -73,90 +90,88 @@ export default function SettingsPage() {
     }
   };
 
+  if (loading) return <SettingsSkeleton />;
+
+  if (!profile) {
+    return (
+      <div>
+        <h1 className="admin-page-title">个人信息设置</h1>
+        <div className="admin-card text-center" style={{ maxWidth: 600 }}>
+          <p className="text-gray-500 dark:text-gray-400 py-8">加载失败：{error || "未知错误"}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const update = (field: keyof Profile, value: string) =>
+    setProfile((p) => p ? { ...p, [field]: value } : p);
+
   return (
     <div>
-      <h1 className="admin-page-title">个人信息设置</h1>
+      <h1 className="admin-page-title">
+        <FaGear /> 个人信息设置
+      </h1>
 
       <div className="admin-card" style={{ maxWidth: 600 }}>
-        <h2 className="admin-section-title">头像</h2>
-        <div className="mb-6 flex flex-col items-center">
-          <div className="relative mb-3">
+        {/* 头像 */}
+        <div className="admin-form-section">
+          <h2 className="admin-form-section-title"><FaUser /> 头像</h2>
+          <div className="flex flex-col items-center">
             <img
               src={profile.avatar_url || "/avatar.png"}
               alt="头像"
-              className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-200 dark:ring-blue-800"
+              className="admin-avatar-preview mb-3"
             />
-          </div>
-          <input
-            type="file"
-            ref={avatarInputRef}
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], "avatar_url")}
-          />
-          <button
-            className="admin-btn admin-btn-secondary"
-            onClick={() => avatarInputRef.current?.click()}
-          >
-            <FaUpload /> 上传头像
-          </button>
-        </div>
-
-        <div className="space-y-4 mb-8">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">名称</label>
             <input
-              type="text"
-              value={profile.name}
-              onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1a1d24] text-gray-900 dark:text-gray-100"
+              type="file"
+              ref={avatarInputRef}
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], "avatar_url")}
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">职业 / 标语</label>
-            <input
-              type="text"
-              value={profile.title}
-              onChange={(e) => setProfile((p) => ({ ...p, title: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1a1d24] text-gray-900 dark:text-gray-100"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">GitHub 链接</label>
-            <input
-              type="url"
-              value={profile.github_url}
-              onChange={(e) => setProfile((p) => ({ ...p, github_url: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1a1d24] text-gray-900 dark:text-gray-100"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Twitter / X 链接</label>
-            <input
-              type="url"
-              value={profile.twitter_url}
-              onChange={(e) => setProfile((p) => ({ ...p, twitter_url: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1a1d24] text-gray-900 dark:text-gray-100"
-            />
+            <button className="admin-btn admin-btn-secondary" onClick={() => avatarInputRef.current?.click()}>
+              <FaUpload /> 上传头像
+            </button>
           </div>
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mb-8">
-          <h2 className="admin-section-title mb-4">首页视差背景</h2>
+        {/* 个人信息 */}
+        <div className="admin-form-section">
+          <h2 className="admin-form-section-title"><FaUser /> 个人信息</h2>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">背景图</label>
-            <div className="flex items-center gap-4">
-              <div className="w-32 h-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
-                {profile.parallax_image_url && (
-                  <img
-                    src={profile.parallax_image_url}
-                    alt="背景图预览"
-                    className="w-full h-full object-cover"
-                  />
+          <div className="admin-form-group">
+            <label className="admin-form-label">名称</label>
+            <input className="admin-form-input" value={profile.name} onChange={(e) => update("name", e.target.value)} />
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-form-label">职业 / 标语</label>
+            <input className="admin-form-input" value={profile.title} onChange={(e) => update("title", e.target.value)} />
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-form-label">GitHub 链接</label>
+            <input className="admin-form-input" value={profile.github_url} onChange={(e) => update("github_url", e.target.value)} />
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-form-label">Twitter / X 链接</label>
+            <input className="admin-form-input" value={profile.twitter_url} onChange={(e) => update("twitter_url", e.target.value)} />
+          </div>
+        </div>
+
+        {/* 视差背景 */}
+        <div className="admin-form-section">
+          <h2 className="admin-form-section-title"><FaImage /> 首页视差背景</h2>
+
+          <div className="admin-form-group">
+            <label className="admin-form-label">背景图</label>
+            <div className="admin-upload-area">
+              <div className="admin-upload-preview">
+                {profile.parallax_image_url ? (
+                  <img src={profile.parallax_image_url} alt="背景图预览" />
+                ) : (
+                  <span>暂无</span>
                 )}
               </div>
               <input
@@ -166,50 +181,27 @@ export default function SettingsPage() {
                 className="hidden"
                 onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], "parallax_image_url")}
               />
-              <button
-                className="admin-btn admin-btn-secondary"
-                onClick={() => parallaxInputRef.current?.click()}
-              >
-                <FaUpload /> 上传背景图
+              <button className="admin-btn admin-btn-secondary" onClick={() => parallaxInputRef.current?.click()}>
+                <FaUpload /> 上传
               </button>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">标题</label>
-              <input
-                type="text"
-                value={profile.parallax_title}
-                onChange={(e) => setProfile((p) => ({ ...p, parallax_title: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1a1d24] text-gray-900 dark:text-gray-100"
-              />
-            </div>
+          <div className="admin-form-group">
+            <label className="admin-form-label">标题（留空隐藏）</label>
+            <input className="admin-form-input" value={profile.parallax_title} onChange={(e) => update("parallax_title", e.target.value)} placeholder="输入标题文字" />
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">副标题</label>
-              <input
-                type="text"
-                value={profile.parallax_subtitle}
-                onChange={(e) => setProfile((p) => ({ ...p, parallax_subtitle: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#1a1d24] text-gray-900 dark:text-gray-100"
-              />
-            </div>
+          <div className="admin-form-group">
+            <label className="admin-form-label">副标题（留空隐藏）</label>
+            <input className="admin-form-input" value={profile.parallax_subtitle} onChange={(e) => update("parallax_subtitle", e.target.value)} placeholder="输入副标题文字" />
           </div>
         </div>
 
-        {error && (
-          <p className="text-sm text-red-500">{error}</p>
-        )}
-        {message && !error && (
-          <p className="text-sm text-green-500">{message}</p>
-        )}
+        {error && <div className="admin-message admin-message-error mb-4">{error}</div>}
+        {message && !error && <div className="admin-message admin-message-success mb-4">{message}</div>}
 
-        <button
-          className="admin-btn admin-btn-primary mt-4"
-          onClick={handleSave}
-          disabled={saving}
-        >
+        <button className="admin-btn admin-btn-primary" onClick={handleSave} disabled={saving}>
           <FaCheck /> {saving ? "保存中..." : "保存"}
         </button>
       </div>
