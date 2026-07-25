@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { FaTrashCan } from "react-icons/fa6";
+import { uploadImage } from "@/lib/upload";
+import { FaTrashCan, FaImages, FaUpload } from "react-icons/fa6";
 import "./images.css";
 
 interface ImageItem {
@@ -14,9 +15,9 @@ interface ImageItem {
 
 function ImageSkeleton() {
   return (
-    <div className="image-loading">
+    <div className="image-grid">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="image-skeleton" />
+        <div key={i} className="admin-skeleton" style={{ height: 210, borderRadius: 10 }} />
       ))}
     </div>
   );
@@ -26,6 +27,8 @@ export default function ImageManagerPage() {
   const [images, setImages] = useState<ImageItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -124,20 +127,51 @@ export default function ImageManagerPage() {
     }
   };
 
+  const handleUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const url = await uploadImage(file);
+      const name = url.split("/").pop()!;
+      const { data: urlData } = supabase.storage.from("article-images").getPublicUrl(name);
+      setImages((prev) => [{ name, publicUrl: urlData.publicUrl, article: null }, ...prev]);
+    } catch (err) {
+      alert("上传失败");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div>
-      <h1 className="admin-page-title">
-        <span>🖼️</span>图片管理
-        {!loading && <span className="admin-stat-label" style={{ fontSize: "0.8rem", fontWeight: 400 }}>({images.length})</span>}
-      </h1>
+      <div className="admin-page-title">
+        <FaImages /> 图片管理
+        {!loading && <span className="admin-stat-label" style={{ fontSize: "0.8rem", fontWeight: 400, marginLeft: 4 }}>({images.length})</span>}
+      </div>
+
+      <div className="mb-4">
+        <button
+          className="admin-btn admin-btn-secondary"
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+        >
+          <FaUpload /> {uploading ? "上传中..." : "上传图片"}
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])}
+        />
+      </div>
 
       {loading ? (
         <ImageSkeleton />
       ) : images.length === 0 ? (
-        <p className="image-empty">
-          <span style={{ fontSize: "2rem", display: "block", marginBottom: "0.5rem" }}>🖼️</span>
-          暂无图片
-        </p>
+        <div className="admin-empty">
+          <FaImages style={{ fontSize: "2.5rem", display: "block", margin: "0 auto 0.5rem" }} />
+          <p>暂无图片</p>
+        </div>
       ) : (
         <div className="image-grid">
           {images.map(({ publicUrl, size, name, article }, idx) => (
