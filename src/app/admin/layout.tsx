@@ -14,16 +14,41 @@ import {
   FaNewspaper,
   FaChevronLeft,
   FaChevronRight,
+  FaSun,
+  FaMoon,
 } from "react-icons/fa6";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import "./admin.css";
 
-const NAV_ITEMS: { href: string; label: string; icon: React.ComponentType; exact?: boolean; disabled?: boolean }[] = [
-  { href: "/admin", label: "控制台", icon: FaGaugeHigh, exact: true },
-  { href: "/admin/create", label: "写文章", icon: FaPenToSquare },
-  { href: "/admin/articles", label: "文章管理", icon: FaNewspaper },
-  { href: "/admin/images", label: "图片管理", icon: FaImages },
-  { href: "/admin/settings", label: "设置", icon: FaGear },
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ComponentType;
+  exact?: boolean;
+  disabled?: boolean;
+}
+
+const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
+  {
+    title: "概览",
+    items: [
+      { href: "/admin", label: "控制台", icon: FaGaugeHigh, exact: true },
+    ],
+  },
+  {
+    title: "内容管理",
+    items: [
+      { href: "/admin/create", label: "写文章", icon: FaPenToSquare },
+      { href: "/admin/articles", label: "文章管理", icon: FaNewspaper },
+      { href: "/admin/images", label: "图片管理", icon: FaImages },
+    ],
+  },
+  {
+    title: "系统",
+    items: [
+      { href: "/admin/settings", label: "设置", icon: FaGear },
+    ],
+  },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -44,7 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     });
   };
 
-  const isActive = (item: (typeof NAV_ITEMS)[number]) => {
+  const isActive = (item: NavItem) => {
     if (item.disabled) return false;
     if (item.exact) return pathname === item.href;
     return pathname.startsWith(item.href);
@@ -82,23 +107,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         <nav className="admin-sidebar-nav">
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.label}
-                href={item.disabled ? "#" : item.href}
-                className={`admin-nav-item ${isActive(item) ? "active" : ""} ${item.disabled ? "disabled" : ""}`}
-                onClick={() => setSidebarOpen(false)}
-                aria-disabled={item.disabled}
-                title={collapsed ? item.label : undefined}
-              >
-                <Icon />
-                {!collapsed && <span>{item.label}</span>}
-                {!collapsed && item.disabled && <span className="admin-nav-badge">即将推出</span>}
-              </Link>
-            );
-          })}
+          {NAV_SECTIONS.map((section) => (
+            <div key={section.title} className="admin-nav-section">
+              {!collapsed && <span className="admin-nav-section-title">{section.title}</span>}
+              {section.items.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.label}
+                    href={item.disabled ? "#" : item.href}
+                    className={`admin-nav-item ${isActive(item) ? "active" : ""} ${item.disabled ? "disabled" : ""}`}
+                    onClick={() => setSidebarOpen(false)}
+                    aria-disabled={item.disabled}
+                    title={collapsed ? item.label : undefined}
+                  >
+                    <Icon />
+                    {!collapsed && <span>{item.label}</span>}
+                    {!collapsed && item.disabled && <span className="admin-nav-badge">即将推出</span>}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         <div className="admin-sidebar-footer">
@@ -119,7 +149,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {!collapsed && <span>返回前台</span>}
             </Link>
             {!collapsed && (
-              <div className="admin-nav-item" style={{ justifyContent: "space-between", cursor: "default" }}>
+              <div className="admin-nav-item admin-theme-row">
                 <span>主题</span>
                 <ThemeToggle />
               </div>

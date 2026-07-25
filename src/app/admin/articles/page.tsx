@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createServerSupabase } from "@/lib/supabaseServer";
 import ArticleItem from "@/components/article/ArticleItem";
 import { FaFileLines, FaNewspaper, FaChevronLeft, FaChevronRight, FaMagnifyingGlass } from "react-icons/fa6";
+import CategoryFilter from "@/components/admin/CategoryFilter";
 
 const PAGE_SIZE = 15;
 
@@ -96,23 +97,7 @@ export default async function AdminArticlesPage({
             />
           </div>
 
-          <select
-            name="category"
-            className="admin-category-select"
-            defaultValue={categoryFilter}
-            onChange={(e) => {
-              const params = new URLSearchParams(window.location.search);
-              if (e.target.value) params.set("category", e.target.value);
-              else params.delete("category");
-              params.delete("page");
-              window.location.href = `/admin/articles?${params.toString()}`;
-            }}
-          >
-            <option value="">全部分类</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+          <CategoryFilter categories={categories} defaultValue={categoryFilter} />
 
           <button type="submit" className="admin-btn admin-btn-primary" style={{ flexShrink: 0 }}>
             <FaMagnifyingGlass /> 搜索
