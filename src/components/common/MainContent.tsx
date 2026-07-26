@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FiBookOpen } from "react-icons/fi";
+import ImageWithLoader from "@/components/common/ImageWithLoader";
 import type { Article } from "@/types/article";
 
 interface MainContentProps {
@@ -71,11 +72,10 @@ export default function MainContent({
                 {/* 封面图 */}
                 {article.image_url && (
                   <div className="w-full overflow-hidden rounded-xl bg-gray-50 dark:bg-[#1e2128] p-3">
-                    <img
+                    <ImageWithLoader
                       src={article.image_url}
                       alt={article.title}
                       className="w-full h-auto object-contain rounded-lg shadow-sm"
-                      loading="lazy"
                     />
                   </div>
                 )}
