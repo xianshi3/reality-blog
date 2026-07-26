@@ -18,7 +18,6 @@
 import type { Article } from '@/types/article';
 import Footer from '@/components/layout/Footer';
 import LikeButton from '@/components/common/LikeButton';
-import ReadingProgress from '@/components/common/ReadingProgress';
 import { createServerSupabase } from '@/lib/supabaseServer';
 import ArticleContent from '@/components/article/ArticleContent';
 import ArticleToc from '@/components/article/ArticleToc';
@@ -72,9 +71,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
   return (
     <>
     <div className="article-page-container">
-      {/* 顶部阅读进度条 */}
-      <ReadingProgress />
-
       {/* 固定返回首页按钮（桌面端） */}
       <div className="hidden md:block">
         <ReturnHome />

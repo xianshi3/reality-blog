@@ -209,7 +209,7 @@ export default function ArticleToc({ className }: Props) {
                   <FaXmark className="w-4 h-4" />
                 </button>
               </div>
-              <div className="flex-1 overflow-y-auto py-1 px-2">
+              <div className="flex-1 overflow-y-auto py-1 px-2 toc-scroll">
                 {tocItems.map((item, index) => (
                   <motion.a
                     key={item.id}
@@ -285,7 +285,7 @@ export default function ArticleToc({ className }: Props) {
           <FaXmark />
         </button>
       </div>
-      <div className="flex-1 overflow-y-auto min-h-0 py-1 toc-desktop-list" style={{ maxHeight: "min(50vh, 400px)" }}>
+      <div className="flex-1 overflow-y-auto min-h-0 py-1 toc-desktop-list toc-scroll" style={{ maxHeight: "min(50vh, 400px)" }}>
         {tocItems.map((item) => (
           <a
             key={item.id}
