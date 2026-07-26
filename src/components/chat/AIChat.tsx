@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -162,7 +162,6 @@ export default function AIChat() {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     setIsDesktop(window.innerWidth >= 640);
@@ -172,8 +171,8 @@ export default function AIChat() {
   }, []);
 
   useEffect(() => {
-    if (open && isDesktop) {
-      if (buttonRef.current) {
+    if (open) {
+      if (isDesktop && buttonRef.current) {
         const buttonRect = buttonRef.current.getBoundingClientRect();
         const chatWidth = 320;
         const chatHeight = 560;
@@ -195,13 +194,14 @@ export default function AIChat() {
       }
       const timer = setTimeout(() => setIsVisible(true), 10);
       return () => clearTimeout(timer);
-    } else if (!open) {
+    } else {
       setIsVisible(false);
     }
   }, [open, isDesktop]);
 
   useEffect(() => {
-    const messagesParam = searchParams.get('messages');
+    const params = new URLSearchParams(window.location.search);
+    const messagesParam = params.get('messages');
     if (messagesParam) {
       try {
         const parsedMessages = JSON.parse(messagesParam);
@@ -213,7 +213,7 @@ export default function AIChat() {
         console.error('Failed to parse messages from URL:', error);
       }
     }
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     const savedMessages = localStorage.getItem('ai-chat-messages');
@@ -378,10 +378,11 @@ export default function AIChat() {
         ref={buttonRef}
         onClick={() => setOpen(true)}
         aria-label="打开AI Chat"
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto z-50 group"
+        className={`fixed bottom-6 left-4 z-[999] group transition-opacity duration-200 ${open ? 'opacity-0 pointer-events-none' : ''}`}
+        style={{ touchAction: "manipulation" }}
       >
         <div className="relative">
-          <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl bg-white dark:bg-[#23272f] shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
+          <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl bg-white dark:bg-[#23272f] shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 ring-1 ring-gray-200 dark:ring-gray-700">
             <HiOutlineSparkles className="w-5 h-5 sm:w-6 sm:h-6 text-[#2563eb] dark:text-[#60a5fa]" />
           </div>
           <span className="hidden sm:block absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-[#1f2937] dark:bg-gray-200 text-white dark:text-gray-800 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
@@ -393,7 +394,7 @@ export default function AIChat() {
       {open && (
         <>
           <div
-            className={`fixed inset-0 bg-black/20 dark:bg-black/40 z-40 sm:hidden transition-opacity duration-300 ${
+            className={`fixed inset-0 bg-black/20 dark:bg-black/40 z-[70] sm:hidden transition-opacity duration-300 ${
               isVisible ? 'opacity-100' : 'opacity-0'
             }`}
             onClick={() => setOpen(false)}
@@ -401,7 +402,7 @@ export default function AIChat() {
 
           <div
             ref={chatContainerRef}
-            className={`fixed flex flex-col rounded-xl shadow-xl overflow-hidden z-50
+            className={`fixed flex flex-col rounded-xl shadow-xl overflow-hidden z-[80]
                        bg-white dark:bg-[#23272f] transition-all duration-300 ease-out
                        ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
             style={isDesktop ? {

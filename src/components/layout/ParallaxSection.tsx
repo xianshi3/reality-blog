@@ -118,13 +118,9 @@ export default function ParallaxSection({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative overflow-hidden group transition-all duration-500"
+      className="relative overflow-hidden group transition-all duration-500 w-full"
       style={{
-        height: isMobile ? 300 : height,
-        width: "110vw",      // 撑满宽度
-        marginLeft: "-5vw",    // 左右均匀超出
-        marginRight: "-5vw",
-        // maxWidth: "100%",    // 防止超出屏幕
+        height: isMobile ? 280 : height,
         transform: isHovered && !isMobile 
           ? `perspective(1000px) rotateX(${mouseTiltY}deg) rotateY(${-mouseTiltX}deg) scale(1.01)` 
           : "none",

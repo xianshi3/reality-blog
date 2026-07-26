@@ -84,7 +84,7 @@ export default async function Home() {
           currentPage={page}
         />
         <RightSidebar
-          className="w-72 flex-shrink-0"
+          className="w-72 flex-shrink-0 hidden lg:block"
           articles={articles}
         />
       </main>
@@ -112,9 +112,7 @@ export default async function Home() {
       )}
 
       {/* 底部固定 AI 聊天组件 */}
-      <div className="fixed bottom-4 left-4 right-4 sm:right-auto z-50 max-w-[350px] w-full sm:w-[350px]">
-        <AIChat />
-      </div>
+      <AIChat />
 
       {/* 页面底部 Footer */}
       <Footer currentYear={new Date().getFullYear()} />

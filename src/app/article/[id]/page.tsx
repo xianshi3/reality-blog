@@ -23,8 +23,10 @@ import { createServerSupabase } from '@/lib/supabaseServer';
 import ArticleContent from '@/components/article/ArticleContent';
 import ArticleToc from '@/components/article/ArticleToc';
 import ReturnHome from '@/components/common/ReturnHome';
+import MobileArticleNav from '@/components/common/MobileArticleNav';
 import TagList from '@/components/article/TagList';
-import AIChat from '@/components/chat/DynamicAIChat';
+import AIChat from '@/components/chat/AIChat';
+import { Suspense } from 'react';
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   // 解析路由参数（文章 ID）
@@ -68,12 +70,18 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     : '未知日期';
 
   return (
+    <>
     <div className="article-page-container">
       {/* 顶部阅读进度条 */}
       <ReadingProgress />
 
-      {/* 固定返回首页按钮 */}
-      <ReturnHome />
+      {/* 固定返回首页按钮（桌面端） */}
+      <div className="hidden md:block">
+        <ReturnHome />
+      </div>
+
+      {/* 移动端顶部导航条 */}
+      <MobileArticleNav title={article.title} />
 
       <div className="article-container">
         <main className="article-page-main">
@@ -102,13 +110,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
         </aside>
       </div>
 
-      {/* 固定 AI 聊天助手 */}
-      <div className="fixed-ai-chat">
-        <AIChat />
-      </div>
-
       {/* 页脚 */}
       <Footer currentYear={currentYear} />
     </div>
+
+    <Suspense fallback={null}>
+      <AIChat />
+    </Suspense>
+
+    </>
   );
 }
