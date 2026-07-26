@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TechStackCard from "@/components/common/TechStackCard";
 import SearchCard from "@/components/common/SearchCard";
 import TagCard from "@/components/article/TagCard";
+import ImageWithLoader from "@/components/common/ImageWithLoader";
 import { FaUser, FaGithub, FaXTwitter } from "react-icons/fa6";
 import type { Article } from "@/types/article";
 
@@ -45,11 +46,18 @@ export default function RightSidebar({
       <div className={`${cardClass} flex flex-col items-center text-center`}>
 
         <div className="mb-4 p-1 rounded-2xl bg-gradient-to-br from-white/40 to-white/10 dark:from-white/10 dark:to-white/5 shadow-sm">
-          <img
-            src={p?.avatar_url || "/avatar.png"}
-            alt="头像"
-            className="w-24 h-24 rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg transition-transform duration-300 hover:scale-105"
-          />
+          {p?.avatar_url ? (
+            <ImageWithLoader
+              src={p.avatar_url}
+              alt="头像"
+              wrapperClassName="w-24 h-24 rounded-xl"
+              className="w-24 h-24 rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg hover:scale-105"
+            />
+          ) : (
+            <div className="w-24 h-24 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+              <FaUser className="w-8 h-8 text-gray-400" />
+            </div>
+          )}
         </div>
 
         <h1 className="flex items-center gap-2 text-xl font-bold text-gray-800 dark:text-white">

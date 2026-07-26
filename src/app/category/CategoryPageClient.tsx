@@ -7,6 +7,7 @@ import Link from "next/link";
 import { parseTags } from "@/lib/parseTags";
 import { FiSearch, FiX, FiInbox } from "react-icons/fi";
 import Navbar from "@/components/layout/Navbar";
+import ImageWithLoader from "@/components/common/ImageWithLoader";
 
 import "./category.css";
 import Footer from "@/components/layout/Footer";
@@ -223,11 +224,11 @@ export default function CategoryPageClient({ articles }: Props) {
                   >
                     {article.image_url ? (
                       <div className="art-card-image-wrapper">
-                        <img
+                        <ImageWithLoader
                           src={article.image_url}
                           alt={article.title}
                           className="art-card-image"
-                          loading="lazy"
+                          wrapperClassName="w-full h-full"
                         />
                       </div>
                     ) : (

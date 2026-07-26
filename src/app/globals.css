@@ -506,7 +506,7 @@ body {
 .return-home:hover {
   background-color: rgba(255 255 255 / 0.8);
 }
-.return-home.hidden {
+.return-home.is-hidden {
   opacity: 0;
   pointer-events: none;
   transform: translateY(-10px);
@@ -615,3 +615,11 @@ body {
 }
 .prose pre code { line-height: 1.4; white-space: pre; }
 .hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+
+/* ===== TOC 滚动条美化 ===== */
+.toc-scroll::-webkit-scrollbar { width: 4px; }
+.toc-scroll::-webkit-scrollbar-track { background: transparent; }
+.toc-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
+.dark .toc-scroll::-webkit-scrollbar-thumb { background: #4b5563; }
+.toc-scroll { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
+.dark .toc-scroll { scrollbar-color: #4b5563 transparent; }

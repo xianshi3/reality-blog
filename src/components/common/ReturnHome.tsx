@@ -50,7 +50,7 @@ export default function ReturnHome() {
   return (
     <Link
       href="/"
-      className={`return-home ${hidden ? "hidden" : ""}`}
+      className={`return-home ${hidden ? "is-hidden" : ""}`}
       aria-label="返回首页"
       style={{ top: pos.top, left: pos.left, position: "fixed" }}
       onPointerDown={onPointerDown}
