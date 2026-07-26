@@ -18,7 +18,7 @@ export default function Header({
         <Navbar />
       </div>
 
-      <div className="overflow-hidden shadow-xl animate-fadeInDown transition-transform duration-700 ease-in-out hover:scale-105 sm:hover:scale-100 pt-14 sm:pt-16">
+      <div className="w-full overflow-hidden shadow-xl animate-fadeInDown transition-transform duration-700 ease-in-out hover:scale-105 sm:hover:scale-100 pt-14 sm:pt-16">
         <ParallaxSection backgroundImage={parallaxImage} height={450}>
           {parallaxTitle && (
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight drop-shadow-lg">

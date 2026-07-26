@@ -39,7 +39,7 @@ export default function ArticleToc({ className }: Props) {
 
   useEffect(() => {
     const check = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 1200);
       setIsDesktop(window.innerWidth >= 1200);
     };
     check();
@@ -173,7 +173,7 @@ export default function ArticleToc({ className }: Props) {
 
   if (isMobile) {
     return (
-      <div ref={containerRef} className={`mobile-toc-container ${className ?? ""}`}>
+      <div ref={containerRef} className={className ?? ""}>
         <AnimatePresence mode="wait">
           {!isExpanded ? (
             <motion.button
@@ -183,12 +183,12 @@ export default function ArticleToc({ className }: Props) {
               exit={{ scale: 0.8, opacity: 0 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleExpand}
-              className="mobile-toc-toggle"
+              className="fixed bottom-20 right-4 z-50 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-white/90 dark:bg-[#23272f]/90 backdrop-blur-md border border-gray-200 dark:border-gray-700 shadow-lg text-sm text-gray-600 dark:text-gray-300"
             >
-              <span className="toc-icon"><FaList /></span>
-              <span className="toc-label">目录</span>
-              <span className="toc-count">({tocItems.length})</span>
-              <FaChevronDown className="toc-arrow" />
+              <FaList className="text-xs" />
+              <span>目录</span>
+              <span className="text-[10px] text-gray-400">({tocItems.length})</span>
+              <FaChevronDown className="text-[10px] transition-transform duration-200" />
             </motion.button>
           ) : (
             <motion.div
@@ -197,17 +197,19 @@ export default function ArticleToc({ className }: Props) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="mobile-toc-expanded"
+              className="fixed inset-x-4 bottom-4 z-50 max-h-[70vh] flex flex-col rounded-2xl bg-white dark:bg-[#23272f] border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden"
             >
-              <div className="mobile-toc-header">
-                <div className="toc-header-title">
-                  <FaList />
+              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-gray-100">
+                  <FaList className="text-xs text-gray-500" />
                   <span>目录</span>
-                  <span className="toc-count">({tocItems.length})</span>
+                  <span className="text-xs font-normal text-gray-400">({tocItems.length})</span>
                 </div>
-                <button onClick={toggleExpand} className="toc-close-btn"><FaXmark /></button>
+                <button onClick={toggleExpand} className="p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <FaXmark className="w-4 h-4" />
+                </button>
               </div>
-              <div className="mobile-toc-list">
+              <div className="flex-1 overflow-y-auto py-1 px-2">
                 {tocItems.map((item, index) => (
                   <motion.a
                     key={item.id}
@@ -216,17 +218,20 @@ export default function ArticleToc({ className }: Props) {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.03 }}
                     onClick={(e) => handleClick(e, item.id)}
-                    className={`toc-item ${activeId === item.id ? "active" : ""}`}
-                    style={{ paddingLeft: `${(item.level - 1) * 0.5 + 0.75}rem` }}
+                    className={`block rounded-lg py-2 text-sm transition-colors duration-150 ${
+                      activeId === item.id
+                        ? "text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 font-medium"
+                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                    }`}
+                    style={{ paddingLeft: `${(item.level - 1) * 0.75 + 0.75}rem`, paddingRight: "0.75rem" }}
                   >
-                    <span className="toc-level-dot" style={{
-                      backgroundColor: activeId === item.id ? "var(--toc-dot-active)" : item.level === 1 ? "var(--toc-dot-level1)" : "var(--toc-dot-level2)",
-                    }} />
-                    <span className="toc-item-text">{item.text}</span>
+                    <span className="truncate block">{item.text}</span>
                   </motion.a>
                 ))}
               </div>
-              <div className="mobile-toc-footer">点击跳转 · 滑动关闭</div>
+              <div className="flex-none px-4 py-2 border-t border-gray-100 dark:border-gray-800 text-[10px] text-gray-400 dark:text-gray-500 text-center">
+                点击跳转 · 点击外部关闭
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

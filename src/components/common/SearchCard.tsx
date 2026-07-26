@@ -35,7 +35,7 @@ const itemVariants = {
 export default function SearchCard({ articles }: SearchCardProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [highlightIdx, setHighlightIdx] = useState(-1);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
