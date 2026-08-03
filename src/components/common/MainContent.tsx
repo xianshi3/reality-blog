@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FiBookOpen } from "react-icons/fi";
 import ImageWithLoader from "@/components/common/ImageWithLoader";
@@ -16,33 +15,13 @@ interface MainContentProps {
  * 主内容组件
  * 功能：
  * - 直接按时间顺序展示文章
- * - 支持切换动画
+ * - 切页时通过 key 重挂载触发入场动画
  */
 export default function MainContent({
   articles,
   className = "",
   currentPage = 1,
 }: MainContentProps) {
-
-  const [displayPage, setDisplayPage] = useState(currentPage);
-  const [transitionStage, setTransitionStage] =
-    useState<"enter" | "exit">("enter");
-
-  /**
-   * 页码切换动画
-   */
-  useEffect(() => {
-    if (currentPage !== displayPage) {
-      setTransitionStage("exit");
-
-      const timer = setTimeout(() => {
-        setDisplayPage(currentPage);
-        setTransitionStage("enter");
-      }, 300);
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentPage, displayPage]);
 
   return (
     <main className={`space-y-8 ${className}`}>
@@ -52,12 +31,8 @@ export default function MainContent({
       {/* ===================== */}
 
       <div
-        key={displayPage}
-        className={
-          transitionStage === "enter"
-            ? "page-transition-enter-active"
-            : "page-transition-exit-active"
-        }
+        key={currentPage}
+        className="animate-fadeInUp"
       >
         {/* 统一 grid，不再分年份 */}
         <div className="md:columns-2 columns-1 gap-x-6">
@@ -76,6 +51,7 @@ export default function MainContent({
                       src={article.image_url}
                       alt={article.title}
                       className="w-full h-auto object-contain rounded-lg shadow-sm"
+                      loading="eager"
                     />
                   </div>
                 )}

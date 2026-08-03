@@ -8,6 +8,7 @@ interface ImageWithLoaderProps {
   alt: string;
   className?: string;
   wrapperClassName?: string;
+  loading?: "lazy" | "eager";
 }
 
 export default function ImageWithLoader({
@@ -15,6 +16,7 @@ export default function ImageWithLoader({
   alt,
   className = "",
   wrapperClassName = "",
+  loading = "lazy",
 }: ImageWithLoaderProps) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -27,7 +29,7 @@ export default function ImageWithLoader({
     if (imgRef.current?.complete) {
       setLoaded(true);
     }
-  }, []);
+  }, [src]);
 
   if (error) {
     return (
@@ -51,7 +53,7 @@ export default function ImageWithLoader({
         onLoad={handleLoad}
         onError={handleError}
         className={`transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"} ${className}`}
-        loading="lazy"
+        loading={loading}
       />
     </div>
   );

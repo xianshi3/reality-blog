@@ -8,7 +8,7 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import styles from "./fullscreen-chat.module.css";
 
-import { HiOutlineHome, HiOutlineSparkles, HiOutlinePlus, HiOutlineClock, HiOutlineDownload } from "react-icons/hi";
+import { HiOutlineHome, HiOutlineSparkles, HiOutlinePlus, HiOutlineClock, HiOutlineDownload, HiOutlineSearch, HiOutlineX, HiOutlineChatAlt2, HiOutlineLightningBolt, HiOutlineCode, HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 import { IoSend, IoStop, IoRefresh, IoTrash } from "react-icons/io5";
 import { RiRobot2Line, RiUserLine } from "react-icons/ri";
 import { BsClipboard, BsClipboardCheck } from "react-icons/bs";
@@ -33,6 +33,7 @@ type Conversation = {
 
 const STORAGE_KEY = "ai-chat-conversations";
 const CURRENT_ID_KEY = "ai-chat-current-id";
+const SIDEBAR_COLLAPSED_KEY = "ai-chat-sidebar-collapsed";
 const MAX_TITLE_LENGTH = 40;
 
 const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -104,13 +105,20 @@ const CodeBlock = ({ inline, className, children, ...props }: any) => {
     return (
       <div className={styles.codeBlockWrapper}>
         <div className={styles.codeHeader}>
-          <span className={styles.codeLanguage}>
-            <VscSymbolKeyword />
-            {language}
-          </span>
+          <div className={styles.codeHeaderInfo}>
+            <div className={styles.codeDots}>
+              <span />
+              <span />
+              <span />
+            </div>
+            <span className={styles.codeLanguage}>
+              <VscSymbolKeyword />
+              {language}
+            </span>
+          </div>
           <CopyButton text={code} />
         </div>
-        <div className={styles.codeBlockContent}>
+        <div className={styles.codeBlockBody}>
           <pre className={`language-${language}`}>
             <code className={className}>{children}</code>
           </pre>
@@ -122,6 +130,27 @@ const CodeBlock = ({ inline, className, children, ...props }: any) => {
   return <code className={className} {...props}>{children}</code>;
 };
 
+const STARTERS = [
+  {
+    icon: <HiOutlineLightningBolt />,
+    title: "高效任务助手",
+    desc: "帮我规划今天的高效日程",
+    prompt: "帮我制定今天的高效计划，包含重要/紧急分类",
+  },
+  {
+    icon: <HiOutlineChatAlt2 />,
+    title: "知识问答",
+    desc: "用通俗的语言讲清复杂概念",
+    prompt: "请用通俗易懂的方式给我解释一个复杂概念",
+  },
+  {
+    icon: <HiOutlineCode />,
+    title: "代码助手",
+    desc: "生成、优化或讲解一段代码",
+    prompt: "帮我写一段优雅且带注释的示例代码",
+  },
+];
+
 function ChatContent() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -132,6 +161,15 @@ function ChatContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [editingMsgId, setEditingMsgId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
+  const [conversationQuery, setConversationQuery] = useState("");
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -342,7 +380,28 @@ function ChatContent() {
     setInput("");
     setCurrentConvId(null);
     setEditingMsgId(null);
+    setConversationQuery("");
     setSidebarOpen(false);
+    textareaRef.current?.focus();
+  };
+
+  const handleToggleCollapse = () => {
+    setCollapsed(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? "1" : "0");
+      } catch {}
+      return next;
+    });
+  };
+
+  const handleExpandSidebar = () => {
+    if (collapsed) {
+      setCollapsed(false);
+      try {
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, "0");
+      } catch {}
+    }
   };
 
   const handleCopyMessage = async (text: string) => {
@@ -444,31 +503,97 @@ function ChatContent() {
     }
   };
 
+  const query = conversationQuery.trim().toLowerCase();
+  const filteredConversations = query
+    ? conversations.filter(c => c.title.toLowerCase().includes(query))
+    : conversations;
+
   return (
     <div className={styles.app}>
+      {/* 背景装饰 */}
+      <div className={styles.dotGrid} />
+      <div className={`${styles.orb} ${styles.orbA}`} />
+      <div className={`${styles.orb} ${styles.orbB}`} />
+      <div className={`${styles.orb} ${styles.orbC}`} />
+
       {sidebarOpen && (
         <div className={styles.sidebarOverlay} onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
-        <div className={styles.sidebarHeader}>
-          <h2 className={styles.sidebarTitle}>历史记录</h2>
+      {/* ===== 左侧对话栏 ===== */}
+      <aside
+        className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""} ${collapsed ? styles.sidebarCollapsed : ""}`}
+      >
+        <button
+          className={styles.sidebarCollapseBtn}
+          onClick={handleToggleCollapse}
+          title={collapsed ? "展开侧栏" : "收起侧栏"}
+          aria-label={collapsed ? "展开侧栏" : "收起侧栏"}
+        >
+          {collapsed ? <HiOutlineChevronRight /> : <HiOutlineChevronLeft />}
+        </button>
+
+        <div className={styles.sidebarHeader} onClick={collapsed ? handleExpandSidebar : undefined}>
+          <div className={styles.sidebarBrand}>
+            <span className={styles.sidebarBrandIcon}>
+              <HiOutlineChatAlt2 />
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <h2 className={styles.sidebarTitle}>对话记录</h2>
+              <span className={styles.sidebarCount}>{conversations.length}</span>
+            </div>
+          </div>
           <button
             className={styles.sidebarClose}
             onClick={() => setSidebarOpen(false)}
+            title="关闭"
           >
-            ×
+            <HiOutlineX />
           </button>
         </div>
+
+        <button className={styles.newChatBtn} onClick={handleNewChat} title="新建对话">
+          <HiOutlinePlus />
+          <span className={styles.newChatLabel}>新建对话</span>
+        </button>
+
+        <div className={styles.sidebarSearch}>
+          <span className={styles.sidebarSearchIcon}><HiOutlineSearch /></span>
+          <input
+            className={styles.sidebarSearchInput}
+            value={conversationQuery}
+            onChange={(e) => setConversationQuery(e.target.value)}
+            placeholder="搜索对话…"
+          />
+          {conversationQuery && (
+            <button
+              className={styles.sidebarSearchClear}
+              onClick={() => setConversationQuery("")}
+              title="清空"
+            >
+              <HiOutlineX />
+            </button>
+          )}
+        </div>
+
         <div className={styles.sidebarList}>
-          {conversations.length === 0 ? (
-            <div className={styles.sidebarEmpty}>暂无对话记录</div>
+          {filteredConversations.length === 0 ? (
+            <div className={query ? styles.sidebarSearchEmpty : styles.sidebarEmpty}>
+              {query ? "没有找到匹配的对话" : (
+                <>
+                  暂无对话记录
+                  <br />
+                  开始一段新的对话吧 ✨
+                </>
+              )}
+            </div>
           ) : (
-            conversations.map(conv => (
+            filteredConversations.map((conv, index) => (
               <div
                 key={conv.id}
                 className={`${styles.sidebarItem} ${conv.id === currentConvId ? styles.sidebarItemActive : ""}`}
                 onClick={() => handleLoadConversation(conv)}
+                style={{ animationDelay: `${index * 0.03}s` }}
               >
                 <div className={styles.sidebarItemTitle}>{conv.title}</div>
                 <div className={styles.sidebarItemMeta}>
@@ -486,216 +611,268 @@ function ChatContent() {
             ))
           )}
         </div>
+
+        <div className={styles.sidebarFooter}>
+          <span>
+            <span className={styles.sidebarFooterDot} />
+            本地存储
+          </span>
+          <span>{conversations.length} 段对话</span>
+        </div>
       </aside>
 
-      <header className={styles.header}>
-        <div className={styles.headerLeft}>
-          <button
-            className={styles.headerMenuBtn}
-            onClick={() => setSidebarOpen(true)}
-            title="历史记录"
-          >
-            <HiOutlineClock />
-          </button>
-          <div className={styles.headerLogo}>
-            <HiOutlineSparkles className={styles.headerIcon} />
-          </div>
-          <h1 className={styles.headerTitle}>AI Chat</h1>
-          <div className={`${styles.headerStatus} ${loading ? styles.thinking : ""}`}>
-            <span className={styles.statusDot}></span>
-            <span>{loading ? "思考中..." : "在线"}</span>
-          </div>
-        </div>
-        <div className="flex gap-3">
-          {messages.length > 0 && (
-            <button className={styles.headerAction} onClick={handleExportMarkdown} title="导出 Markdown">
-              <HiOutlineDownload />
-              <span>导出</span>
+      {/* ===== 主区域 ===== */}
+      <div className={styles.main}>
+        <header className={styles.header}>
+          <div className={styles.headerLeft}>
+            <button
+              className={styles.headerMenuBtn}
+              onClick={() => setSidebarOpen(true)}
+              title="对话记录"
+            >
+              <HiOutlineClock />
             </button>
-          )}
-          <button className={styles.headerAction} onClick={handleNewChat} title="新建对话">
-            <HiOutlinePlus />
-            <span>新建</span>
-          </button>
-          <button className={styles.headerAction} onClick={() => router.push("/")}>
-            <HiOutlineHome />
-            <span>首页</span>
-          </button>
-        </div>
-      </header>
-
-      <main className={styles.chatArea} ref={chatAreaRef}>
-        <div className={styles.messagesContainer}>
-          {messages.length === 0 ? (
-            <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>
-                <HiOutlineSparkles />
-              </div>
-              <h2>开始新的对话</h2>
-              <p>输入消息，开始与AI助手交流</p>
-              <div className={styles.emptySuggestions}>
-                <button className={styles.suggestionChip} onClick={() => setInput("你能做什么？")}>你能做什么？</button>
-                <button className={styles.suggestionChip} onClick={() => setInput("写一首诗")}>写一首诗</button>
-                <button className={styles.suggestionChip} onClick={() => setInput("解释量子计算")}>解释量子计算</button>
-              </div>
+            <div className={styles.headerLogo}>
+              <HiOutlineSparkles />
             </div>
-          ) : (
-            messages.map((msg, index) => (
-              <div
-                key={msg.id}
-                className={`${styles.messageItem} ${msg.role === "user" ? styles.user : ""}`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className={styles.messageAvatar}>
-                  {msg.role === "user" ? <RiUserLine /> : <RiRobot2Line />}
-                </div>
-                <div className={styles.messageContent}>
-                  <div className={styles.messageSender}>
-                    {msg.role === "user" ? "你" : "AI Chat"}
-                    <span className={styles.messageTime}>
-                      {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                    </span>
-                  </div>
-                  {editingMsgId === msg.id ? (
-                    <div className={styles.editContainer}>
-                      <textarea
-                        ref={editTextareaRef}
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
-                        onKeyDown={handleEditKeyDown}
-                        className={styles.editTextarea}
-                      />
-                      <div className={styles.editActions}>
-                        <span className={styles.editHint}>Enter 保存 · Esc 取消 · Shift+Enter 换行</span>
-                        <div className="flex gap-2">
-                          <button onClick={handleEditCancel} className={styles.editCancelBtn}>取消</button>
-                          <button onClick={handleEditSave} className={styles.editSaveBtn}>保存</button>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className={styles.messageBubble}>
-                      {msg.role === "assistant" && msg.content === "" ? (
-                        <div className={styles.typingIndicator}>
-                          <span></span>
-                          <span></span>
-                          <span></span>
-                        </div>
-                      ) : msg.role === "assistant" ? (
-                        <ReactMarkdown
-                          remarkPlugins={[remarkGfm]}
-                          rehypePlugins={[rehypeHighlight]}
-                          components={{ code: CodeBlock }}
-                        >
-                          {msg.content}
-                        </ReactMarkdown>
-                      ) : (
-                        <p>{msg.content}</p>
-                      )}
-                    </div>
-                  )}
-                  {!editingMsgId && msg.role === "user" && !loading && (
-                    <div className={styles.messageActions}>
-                      <button
-                        className={styles.messageActionBtn}
-                        onClick={() => handleEditStart(msg)}
-                        title="编辑"
-                      >
-                        <MdEdit />
-                      </button>
-                    </div>
-                  )}
-                  {!editingMsgId && msg.role === "assistant" && msg.content && !loading && (
-                    <div className={styles.messageActions}>
-                      <button
-                        className={styles.messageActionBtn}
-                        onClick={() => {
-                          const userIdx = index - 1;
-                          if (userIdx >= 0 && messages[userIdx].role === "user") {
-                            handleRetry(userIdx);
-                          }
-                        }}
-                        title="重新生成"
-                      >
-                        <IoRefresh />
-                      </button>
-                      <button
-                        className={styles.messageActionBtn}
-                        onClick={() => handleCopyMessage(msg.content)}
-                        title="复制回复"
-                      >
-                        <BsClipboard />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))
-          )}
-
-          {error && (
-            <div className={styles.errorMessage}>
-              <span>{error}</span>
-              <div className="flex gap-2 items-center">
-                <button
-                  onClick={() => {
-                    const lastUserIdx = messages
-                      .map((m, i) => (m.role === "user" ? i : -1))
-                      .filter(i => i >= 0)
-                      .pop();
-                    if (lastUserIdx !== undefined) handleRetry(lastUserIdx);
-                  }}
-                  className="flex items-center gap-1 text-xs hover:underline"
-                >
-                  <IoRefresh /> 重试
-                </button>
-                <button onClick={() => setError(null)} className={styles.errorClose}>×</button>
-              </div>
+            <div className={styles.headerTitles}>
+              <h1 className={styles.headerTitle}>Reality AI</h1>
+              <span className={styles.headerSubtitle}>智能对话助手</span>
             </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
-      </main>
-
-      <div className={styles.inputArea}>
-        <div className={styles.inputContainer}>
-          <div className={styles.inputWrapper}>
-            <textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="输入消息... (Shift + Enter 换行)"
-              disabled={loading}
-              className={styles.chatInput}
-              rows={1}
-            />
+            <div className={`${styles.headerStatus} ${loading ? styles.thinking : ""}`}>
+              <span className={styles.statusDot}></span>
+              <span>{loading ? "思考中…" : "在线"}</span>
+            </div>
           </div>
-          <div className={styles.buttonGroup}>
-            {loading ? (
-              <button onClick={handleStop} className={styles.stopBtn} title="停止生成">
-                <IoStop />
-              </button>
-            ) : (
-              <button
-                onClick={handleSend}
-                disabled={!input.trim()}
-                className={styles.sendBtn}
-                title="发送 (Enter)"
-              >
-                <IoSend />
+
+          <div className={styles.headerActions}>
+            {messages.length > 0 && (
+              <button className={styles.headerAction} onClick={handleExportMarkdown} title="导出 Markdown">
+                <HiOutlineDownload />
+                <span>导出</span>
               </button>
             )}
+            <button className={styles.headerAction} onClick={handleNewChat} title="新建对话">
+              <HiOutlinePlus />
+              <span>新建</span>
+            </button>
+            <button className={styles.headerAction} onClick={() => router.push("/")} title="返回首页">
+              <HiOutlineHome />
+              <span>首页</span>
+            </button>
           </div>
-        </div>
-        <div className={styles.inputHint}>
-          <span>{loading ? "AI 正在思考... 点击红色按钮停止" : "Enter 发送 · Shift + Enter 换行"}</span>
-          {input.length > 0 && (
-            <span className={`${styles.charCount} ${input.length > 2000 ? styles.warning : ""}`}>
-              {input.length}/2000
-            </span>
-          )}
+        </header>
+
+        <main className={styles.chatArea} ref={chatAreaRef}>
+          <div className={styles.messagesContainer}>
+            {messages.length === 0 ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyOrb}>
+                  <HiOutlineSparkles />
+                </div>
+                <h2 className={styles.emptyTitle}>
+                  你好，我是 <span className={styles.gradientText}>Reality AI</span>
+                </h2>
+                <p className={styles.emptySubtitle}>随时为你解答问题、撰写文档、编写代码</p>
+
+                <div className={styles.emptyStarters}>
+                  {STARTERS.map((item) => (
+                    <button
+                      key={item.title}
+                      className={styles.starterCard}
+                      onClick={() => {
+                        setInput(item.prompt);
+                        textareaRef.current?.focus();
+                      }}
+                    >
+                      <span className={styles.starterIcon}>{item.icon}</span>
+                      <span className={styles.starterTitle}>{item.title}</span>
+                      <p className={styles.starterDesc}>{item.desc}</p>
+                    </button>
+                  ))}
+                </div>
+
+                <p className={styles.emptyHint}>点击卡片或直接输入消息 · Enter 发送 · Shift+Enter 换行</p>
+              </div>
+            ) : (
+              messages.map((msg, index) => (
+                <div
+                  key={msg.id}
+                  className={`${styles.messageItem} ${msg.role === "user" ? styles.user : ""}`}
+                  style={{ animationDelay: `${index * 0.06}s` }}
+                >
+                  <div className={styles.messageAvatar}>
+                    {msg.role === "user" ? <RiUserLine /> : <RiRobot2Line />}
+                  </div>
+                  <div className={styles.messageContent}>
+                    <div className={styles.messageSender}>
+                      <span className={styles.messageSenderName}>
+                        {msg.role === "user" ? "你" : "Reality AI"}
+                      </span>
+                      <span className={styles.messageTime}>
+                        {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </div>
+
+                    {editingMsgId === msg.id ? (
+                      <div className={styles.editContainer}>
+                        <textarea
+                          ref={editTextareaRef}
+                          value={editContent}
+                          onChange={(e) => setEditContent(e.target.value)}
+                          onKeyDown={handleEditKeyDown}
+                          className={styles.editTextarea}
+                        />
+                        <div className={styles.editActions}>
+                          <span className={styles.editHint}>Enter 保存 · Esc 取消 · Shift+Enter 换行</span>
+                          <div style={{ display: "flex", gap: 8 }}>
+                            <button onClick={handleEditCancel} className={styles.editCancelBtn}>取消</button>
+                            <button onClick={handleEditSave} className={styles.editSaveBtn}>保存</button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className={styles.messageBubble}>
+                        {msg.role === "assistant" && msg.content === "" ? (
+                          <div className={styles.typingIndicator}>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                          </div>
+                        ) : msg.role === "assistant" ? (
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            rehypePlugins={[rehypeHighlight]}
+                            components={{ code: CodeBlock }}
+                          >
+                            {msg.content}
+                          </ReactMarkdown>
+                        ) : (
+                          <p>{msg.content}</p>
+                        )}
+                      </div>
+                    )}
+
+                    {!editingMsgId && msg.role === "user" && !loading && (
+                      <div className={styles.messageActions}>
+                        <button
+                          className={styles.messageActionBtn}
+                          onClick={() => handleEditStart(msg)}
+                          title="编辑"
+                        >
+                          <MdEdit />
+                          编辑
+                        </button>
+                      </div>
+                    )}
+
+                    {!editingMsgId && msg.role === "assistant" && msg.content && !loading && (
+                      <div className={styles.messageActions}>
+                        <button
+                          className={styles.messageActionBtn}
+                          onClick={() => {
+                            const userIdx = index - 1;
+                            if (userIdx >= 0 && messages[userIdx].role === "user") {
+                              handleRetry(userIdx);
+                            }
+                          }}
+                          title="重新生成"
+                        >
+                          <IoRefresh />
+                          重试
+                        </button>
+                        <button
+                          className={styles.messageActionBtn}
+                          onClick={() => handleCopyMessage(msg.content)}
+                          title="复制回复"
+                        >
+                          <BsClipboard />
+                          复制
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+
+            {error && (
+              <div className={styles.errorMessage}>
+                <span>{error}</span>
+                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <button
+                    onClick={() => {
+                      const lastUserIdx = messages
+                        .map((m, i) => (m.role === "user" ? i : -1))
+                        .filter(i => i >= 0)
+                        .pop();
+                      if (lastUserIdx !== undefined) handleRetry(lastUserIdx);
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                      fontSize: 12.5,
+                      fontWeight: 600,
+                      background: "transparent",
+                      border: "none",
+                      color: "inherit",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <IoRefresh /> 重试
+                  </button>
+                  <button onClick={() => setError(null)} className={styles.errorClose}>×</button>
+                </div>
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
+        </main>
+
+        {/* ===== 输入区 ===== */}
+        <div className={styles.inputArea}>
+          <div className={styles.inputWrap}>
+            <div className={styles.inputContainer}>
+              <div className={styles.inputInner}>
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="输入消息… (Shift + Enter 换行)"
+                  disabled={loading}
+                  className={styles.chatInput}
+                  rows={1}
+                />
+              </div>
+              <div className={styles.buttonGroup}>
+                {loading ? (
+                  <button onClick={handleStop} className={styles.stopBtn} title="停止生成">
+                    <IoStop />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSend}
+                    disabled={!input.trim()}
+                    className={styles.sendBtn}
+                    title="发送 (Enter)"
+                  >
+                    <IoSend />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className={styles.inputHint}>
+              <span>{loading ? "AI 正在思考… 点击红色按钮停止" : "Enter 发送 · Shift + Enter 换行"}</span>
+              {input.length > 0 && (
+                <span className={`${styles.charCount} ${input.length > 2000 ? styles.warning : ""}`}>
+                  {input.length}/2000
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -706,28 +883,15 @@ export default function FullscreenChat() {
   return (
     <Suspense fallback={
       <div className={styles.app}>
-        <header className={styles.header}>
-          <div className={styles.headerLeft}>
-            <div className={styles.headerLogo}>
-              <HiOutlineSparkles className={styles.headerIcon} />
+        <div className={styles.main}>
+          <div className={styles.emptyState}>
+            <div className={styles.emptyOrb}>
+              <HiOutlineSparkles />
             </div>
-            <h1 className={styles.headerTitle}>AI Chat</h1>
-            <div className={styles.headerStatus}>
-              <span className={styles.statusDot}></span>
-              <span>加载中...</span>
-            </div>
+            <h2 className={styles.emptyTitle}>Reality AI</h2>
+            <p className={styles.emptySubtitle}>加载聊天记录…</p>
           </div>
-        </header>
-        <main className={styles.chatArea}>
-          <div className={`${styles.messagesContainer} flex items-center justify-center`}>
-            <div className="text-center">
-              <div className={`${styles.emptyIcon} mx-auto mb-4 animate-pulse`}>
-                <HiOutlineSparkles className="w-12 h-12 text-gray-400" />
-              </div>
-              <p className="text-gray-500">加载聊天记录...</p>
-            </div>
-          </div>
-        </main>
+        </div>
       </div>
     }>
       <ChatContent />
