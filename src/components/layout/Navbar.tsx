@@ -14,6 +14,7 @@ import {
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const prevScrollRef = useRef(0);
 
   useEffect(() => {
@@ -22,6 +23,8 @@ export default function Navbar() {
     const handleScroll = () => {
       const current = window.scrollY;
       const delta = current - prevScrollRef.current;
+
+      setScrolled(current > 8);
 
       if (current <= 0) {
         setHidden(false);
@@ -46,7 +49,18 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 bg-white/60 supports-backdrop-blur:bg-white/60 backdrop-blur-lg shadow-lg z-50 dark:bg-gray-900/60 dark:supports-backdrop-blur:bg-gray-900/60 transition-transform duration-300"
+      className={`
+        fixed top-0 left-0 right-0 z-50
+        [-webkit-backdrop-filter:saturate(180%)_blur(20px)]
+        [backdrop-filter:saturate(180%)_blur(20px)]
+        border-b
+        transition-all duration-300
+        ${
+          scrolled
+            ? "bg-white/80 supports-[backdrop-filter]:bg-white/80 dark:bg-gray-900/80 dark:supports-[backdrop-filter]:bg-gray-900/80 border-gray-200/70 dark:border-white/10 shadow-lg"
+            : "bg-white/55 supports-[backdrop-filter]:bg-white/55 dark:bg-gray-900/50 dark:supports-[backdrop-filter]:bg-gray-900/50 border-transparent"
+        }
+      `}
       style={{ transform: hidden ? "translateY(-100%)" : "translateY(0)" }}
     >
       <div className="container mx-auto flex justify-between items-center py-3 px-4 sm:py-4 sm:px-6">
@@ -54,9 +68,9 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2 text-xl sm:text-2xl font-extrabold text-gray-800 dark:text-white"
+          className="flex items-center gap-2 text-xl sm:text-2xl text-gray-800 dark:text-white [font-family:var(--font-title)] tracking-[0.05em]"
         >
-          <span className="tracking-wide">Reality Blog</span>
+          <span>Reality Blog</span>
         </Link>
 
         {/* 右侧区域 */}
@@ -130,7 +144,7 @@ export default function Navbar() {
           }
         `}
       >
-        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-lg py-4 px-6 space-y-3">
+        <div className="bg-white/90 supports-[backdrop-filter]:bg-white/80 dark:bg-gray-800/90 dark:supports-[backdrop-filter]:bg-gray-900/80 [-webkit-backdrop-filter:saturate(180%)_blur(20px)] [backdrop-filter:saturate(180%)_blur(20px)] shadow-lg border-t border-gray-200/60 dark:border-white/5 py-4 px-6 space-y-3">
           {navItems.map(({ label, href, icon }) => (
             <Link
               key={href}
