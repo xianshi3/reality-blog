@@ -62,6 +62,7 @@
 | <img src="https://img.shields.io/badge/dark_mode-000000?style=flat-square&logo=darkreader&logoColor=white"/> 深色模式 | 系统自动感知 + 手动切换，inline script 防 FOUC，全站适配 |
 | <img src="https://img.shields.io/badge/responsive-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white"/> 响应式 | 桌面 / 平板 / 手机全尺寸适配，移动端侧栏抽屉菜单 |
 | <img src="https://img.shields.io/badge/Image_Crop-000000?style=flat-square&logo=canvas&logoColor=white"/> 图片裁剪 | 上传前裁剪：头像 1:1 正方形，视差背景 21:9 宽屏 |
+| <img src="https://img.shields.io/badge/SEO-4285F4?style=flat-square&logo=google&logoColor=white"/> SEO | 自动 sitemap.xml、robots.txt、PWA manifest、OG/Twitter 分享图、全局 404 与错误页 |
 
 </div>
 
@@ -125,7 +126,7 @@
   <br/><br/>
   <img width="800" alt="文章管理" src="https://github.com/user-attachments/assets/a888e74c-a450-4bdf-82da-0eae6d4a41d5" />
   <br/>
-  <sub>📝 文章详情 — Markdown 渲染 + 目录 + 阅读进度条 + AI 聊天</sub>
+  <sub>📝 文章详情 — Markdown 渲染 + 目录 + AI 聊天</sub>
   <br/><br/>
   <img width="800" alt="管理后台" src="https://github.com/user-attachments/assets/29dd8d70-bd2f-4079-b3b6-dfd21dcf0fad" />
   <br/>
@@ -157,8 +158,9 @@ npm run dev
 ```env
 NEXT_PUBLIC_SUPABASE_URL=           # Supabase 项目地址
 NEXT_PUBLIC_SUPABASE_ANON_KEY=      # Supabase 匿名密钥
-SUPABASE_SERVICE_ROLE_KEY=          # Supabase 服务角色密钥（仅服务端）
+SUPABASE_SERVICE_ROLE_KEY=          # Supabase 服务角色密钥（仅服务端，图片删除）
 ZHIPU_API_KEY=                      # 智谱 AI API 密钥
+NEXT_PUBLIC_SITE_URL=               # 站点真实域名（sitemap / robots / OG 元数据）
 ```
 
 ---
@@ -242,7 +244,13 @@ src/
 │   ├── category/           # 分类归档
 │   ├── login/              # 登录页
 │   ├── ai-chat/            # AI 聊天
-│   └── api/                # API 路由
+│   ├── api/                # API 路由
+│   ├── not-found.tsx       # 全局 404 页
+│   ├── error.tsx           # 全局错误页
+│   ├── sitemap.ts          # 自动站点地图
+│   ├── robots.ts           # 爬虫规则
+│   ├── manifest.ts         # PWA manifest
+│   └── icon.svg            # favicon
 ├── components/
 │   ├── layout/             # 布局组件（Navbar, Header, Sidebar, Footer）
 │   ├── article/            # 文章组件（Content, TOC, Search, Tags）
@@ -251,7 +259,7 @@ src/
 │   └── admin/              # 管理后台组件
 ├── lib/                    # 工具库（Supabase 客户端, 上传）
 ├── types/                  # TypeScript 类型
-└── middleware.ts           # Supabase 认证中间件
+└── proxy.ts                # Supabase 认证代理（Next.js 16 Proxy 约定）
 ```
 
 ---
@@ -273,10 +281,15 @@ src/
 
 ### 文章阅读体验
 
-- 📊 顶部 **阅读进度条**
 - 📑 可拖拽 **目录导航**（支持固定/浮动切换）
 - 🎨 代码块 **语法高亮**（highlight.js GitHub Dark）
 - ❤️ 响应式 **点赞按钮**（带动画）
+
+### SEO 与错误处理
+
+- 🗺️ 自动生成 **sitemap.xml**（文章 / 分类 / 静态页）与 **robots.txt**
+- 📱 **PWA manifest** + favicon + OG/Twitter 分享图
+- 🚧 毛玻璃风格 **404 / 错误页**（全局 + 根布局双错误边界，适配深色模式）
 
 ---
 
