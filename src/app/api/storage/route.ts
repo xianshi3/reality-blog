@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { createServerSupabase } from '@/lib/supabaseServer';
+import { createServerSupabaseAdmin } from '@/lib/supabaseServer';
 
 export async function DELETE(req: Request) {
   try {
-    const supabase = await createServerSupabase();
+    const supabase = createServerSupabaseAdmin();
     const { name } = await req.json();
 
     const { error } = await supabase.storage
