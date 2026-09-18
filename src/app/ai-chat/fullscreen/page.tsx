@@ -36,7 +36,12 @@ const CURRENT_ID_KEY = "ai-chat-current-id";
 const SIDEBAR_COLLAPSED_KEY = "ai-chat-sidebar-collapsed";
 const MAX_TITLE_LENGTH = 40;
 
-const generateId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+const generateId = () => {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+};
 
 function getConversations(): Conversation[] {
   if (typeof window === "undefined") return [];

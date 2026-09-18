@@ -39,27 +39,46 @@ export async function POST(req: Request) {
       }
     }
 
-    const response = await client.chat.completions.create({
-      model: "glm-4-flash",
-      messages,
-      stream: true,
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30_000);
 
-    const encoder = new TextEncoder();
+    try {
+      const response = await client.chat.completions.create({
+        model: "glm-4-flash",
+        messages,
+        stream: true,
+      });
 
-    const stream = new ReadableStream({
-      async start(controller) {
-        for await (const chunk of response) {
-          const text = chunk.choices?.[0]?.delta?.content;
-          if (text) {
-            controller.enqueue(encoder.encode(text));
+      const encoder = new TextEncoder();
+
+      const stream = new ReadableStream({
+        async start(controller) {
+          try {
+            for await (const chunk of response) {
+              const text = chunk.choices?.[0]?.delta?.content;
+              if (text) {
+                controller.enqueue(encoder.encode(text));
+              }
+            }
+            controller.close();
+          } catch (e) {
+            controller.error(e);
           }
-        }
-        controller.close();
-      },
-    });
+        },
+      });
 
-    return new Response(stream);
+      return new Response(stream);
+    } catch (err) {
+      console.error("AI Chat API Error:", err);
+      return new Response("AI service error, please try again later", {
+        status: 500,
+      });
+    } finally {
+      clearTimeout(timeout);
+      if (controller && !controller.signal.aborted) {
+        controller.abort();
+      }
+    }
   } catch (err) {
     console.error("AI Chat API Error:", err);
     return new Response("AI service error, please try again later", {

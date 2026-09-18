@@ -2,6 +2,7 @@ import { createServerSupabaseAdmin } from "@/lib/supabaseServer";
 
 // 进程内限流兜底：单实例部署或未配置 service role 时使用
 const rateHits = new Map<string, number[]>();
+const CLEANUP_THRESHOLD = 10_000;
 
 function isRateLimitedInMemory(key: string, windowMs: number, max: number): boolean {
   const now = Date.now();
@@ -9,9 +10,18 @@ function isRateLimitedInMemory(key: string, windowMs: number, max: number): bool
   hits.push(now);
   rateHits.set(key, hits);
 
-  if (rateHits.size > 10_000) {
+  if (rateHits.size > CLEANUP_THRESHOLD) {
+    const cutoff = now - windowMs;
     for (const [k, ts] of rateHits) {
-      if (ts.every((t) => now - t >= windowMs)) rateHits.delete(k);
+      // 快速路径：如果最新时间戳都过期，直接删除
+      if (ts[ts.length - 1] < cutoff) {
+        rateHits.delete(k);
+      } else {
+        // 否则过滤过期时间戳
+        const fresh = ts.filter((t) => t >= cutoff);
+        if (fresh.length === 0) rateHits.delete(k);
+        else rateHits.set(k, fresh);
+      }
     }
   }
 

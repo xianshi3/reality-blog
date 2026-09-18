@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { FiBookOpen } from "react-icons/fi";
 import { TbSparkles } from "react-icons/tb";
 
@@ -30,13 +30,15 @@ function writeCache(articleId: string, summary: string) {
 }
 
 function formatDate(date?: string): string {
-  if (!date) return "未知日期";
-  return new Date(date).toLocaleDateString("zh-CN", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
+    if (!date) return "未知日期";
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "未知日期";
+    return d.toLocaleDateString("zh-CN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
 
 /**
  * 文章卡片底部信息栏：日期 + AI 摘要触发 + 阅读图标。
@@ -89,10 +91,12 @@ export default function ArticleCardFooter({ articleId, date }: ArticleCardFooter
 
   const active = status === "done" || status === "error";
 
+  const formattedDate = useMemo(() => formatDate(date), [date]);
+
   return (
     <div className="article-footer">
       <div className="article-footer-row">
-        <span>{formatDate(date)}</span>
+        <span>{formattedDate}</span>
 
         <div className="article-footer-actions">
           <button
