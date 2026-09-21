@@ -51,7 +51,7 @@ export default function RightSidebar({
               src={p.avatar_url}
               alt="头像"
               wrapperClassName="w-24 h-24 rounded-xl"
-              className="w-24 h-24 rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg hover:scale-105"
+              className="admin-avatar-img w-24 h-24 rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg"
             />
           ) : (
             <div className="w-24 h-24 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
