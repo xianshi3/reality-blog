@@ -158,7 +158,7 @@ export default function SettingsPage() {
               <img
                 src={profile.avatar_url || "/avatar.png"}
                 alt="头像"
-                className="rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg"
+                className="admin-avatar-img rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg"
                 style={{ width: 96, height: 96 }}
               />
             </div>
