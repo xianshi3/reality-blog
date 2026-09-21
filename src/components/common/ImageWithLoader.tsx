@@ -9,6 +9,7 @@ interface ImageWithLoaderProps {
   className?: string;
   wrapperClassName?: string;
   loading?: "lazy" | "eager";
+  hoverable?: boolean;
 }
 
 export default function ImageWithLoader({
@@ -17,6 +18,7 @@ export default function ImageWithLoader({
   className = "",
   wrapperClassName = "",
   loading = "lazy",
+  hoverable = false,
 }: ImageWithLoaderProps) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -40,7 +42,7 @@ export default function ImageWithLoader({
   }
 
   return (
-    <div className={`relative overflow-hidden ${wrapperClassName}`}>
+    <div className={`relative ${hoverable ? "overflow-visible hover:overflow-visible" : "overflow-hidden"} ${wrapperClassName}`}>
       {!loaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg">
           <FaSpinner className="w-5 h-5 text-gray-400 animate-spin" />
