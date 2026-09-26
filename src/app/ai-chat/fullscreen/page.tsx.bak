@@ -4,13 +4,7 @@ import React, { useState, useRef, useEffect, useCallback, Suspense } from "react
 import { useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import remarkBreaks from "remark-breaks";
-import remarkMath from "remark-math";
 import rehypeHighlight from "rehype-highlight";
-import rehypeRaw from "rehype-raw";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeKatex from "rehype-katex";
 import "highlight.js/styles/github-dark.css";
 import styles from "./fullscreen-chat.module.css";
 
@@ -318,16 +312,14 @@ function ChatContent() {
     const timeout = setTimeout(() => controller.abort(), 60000);
 
     try {
-      const requestBody = JSON.stringify({
-        messages: msgs.map(m => ({ role: m.role, content: m.content }))
-      });
-      const response = await fetch("/api/chat", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: requestBody,
+        body: JSON.stringify({
+          messages: msgs.map(m => ({ role: m.role, content: m.content }))
+        }),
         signal: controller.signal,
-      });
-      const res = response;
+      );
 
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       if (!res.body) throw new Error("No response body");
