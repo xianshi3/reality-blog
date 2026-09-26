@@ -1038,6 +1038,31 @@
   word-wrap: break-word;
 }
 
+.codeBlockBody pre code {
+  display: block;
+}
+
+.codeLine {
+  display: flex;
+}
+
+.lineNumber {
+  flex: none;
+  width: 2.5em;
+  padding-right: 1em;
+  margin-right: 1em;
+  text-align: right;
+  color: var(--text-3);
+  opacity: 0.55;
+  border-right: 1px solid var(--border);
+  user-select: none;
+}
+
+.lineContent {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* 编辑气泡 */
 .editContainer {
   padding: 10px;

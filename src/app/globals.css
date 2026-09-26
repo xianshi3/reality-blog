@@ -700,14 +700,20 @@ body {
 
 /* ===== 代码高亮 ===== */
 .prose pre {
-  background-color: #0d1117;
+  background-color: #f6f8fa;
+  border: 1px solid #d8dee4;
   border-radius: 12px;
   margin: 1.5rem 0;
   overflow-x: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
   font-size: 0.9rem;
   line-height: 1.5;
   font-family: 'Fira Code', Consolas, Monaco, 'Courier New', monospace;
+}
+.dark .prose pre {
+  background-color: #0d1117;
+  border-color: #30363d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 .prose code {
   font-family: 'Fira Code', Consolas, Monaco, 'Courier New', monospace;
@@ -722,7 +728,78 @@ body {
   font-family: 'Fira Code', Consolas, Monaco, 'Courier New', monospace;
 }
 .prose pre code { line-height: 1.4; white-space: pre; }
-.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+
+/* ===== 代码高亮配色（GitHub 主题，本地化，不依赖 CDN）=====
+   浅色 token 为默认（浅色背景）；深色 token 作用于 `.dark` */
+.hljs { color: #24292e; background: transparent; }
+.hljs-doctag, .hljs-keyword, .hljs-meta .hljs-keyword, .hljs-template-tag,
+.hljs-template-variable, .hljs-type, .hljs-variable.language_ { color: #d73a49; }
+.hljs-title, .hljs-title.class_, .hljs-title.class_.inherited__, .hljs-title.function_ { color: #6f42c1; }
+.hljs-attr, .hljs-attribute, .hljs-literal, .hljs-meta, .hljs-number,
+.hljs-operator, .hljs-variable, .hljs-selector-attr, .hljs-selector-class,
+.hljs-selector-id { color: #005cc5; }
+.hljs-regexp, .hljs-string, .hljs-meta .hljs-string { color: #032f62; }
+.hljs-built_in, .hljs-symbol { color: #e36209; }
+.hljs-comment, .hljs-code, .hljs-formula { color: #6a737d; font-style: italic; }
+.hljs-name, .hljs-quote, .hljs-selector-tag, .hljs-selector-pseudo { color: #22863a; }
+.hljs-subst { color: #24292e; }
+.hljs-section { color: #005cc5; font-weight: bold; }
+.hljs-bullet { color: #735c0f; }
+.hljs-emphasis { color: #24292e; font-style: italic; }
+.hljs-strong { color: #24292e; font-weight: bold; }
+.hljs-addition { color: #22863a; background-color: #f0fff4; }
+.hljs-deletion { color: #b31d28; background-color: #ffeef0; }
+
+.dark .hljs { color: #c9d1d9; }
+.dark .hljs-doctag, .dark .hljs-keyword, .dark .hljs-meta .hljs-keyword, .dark .hljs-template-tag,
+.dark .hljs-template-variable, .dark .hljs-type, .dark .hljs-variable.language_ { color: #ff7b72; }
+.dark .hljs-title, .dark .hljs-title.class_, .dark .hljs-title.class_.inherited__,
+.dark .hljs-title.function_ { color: #d2a8ff; }
+.dark .hljs-attr, .dark .hljs-attribute, .dark .hljs-literal, .dark .hljs-meta, .dark .hljs-number,
+.dark .hljs-operator, .dark .hljs-variable, .dark .hljs-selector-attr, .dark .hljs-selector-class,
+.dark .hljs-selector-id { color: #79c0ff; }
+.dark .hljs-regexp, .dark .hljs-string, .dark .hljs-meta .hljs-string { color: #a5d6ff; }
+.dark .hljs-built_in, .dark .hljs-symbol { color: #ffa657; }
+.dark .hljs-comment, .dark .hljs-code, .dark .hljs-formula { color: #8b949e; }
+.dark .hljs-name, .dark .hljs-quote, .dark .hljs-selector-tag, .dark .hljs-selector-pseudo { color: #7ee787; }
+.dark .hljs-subst { color: #c9d1d9; }
+.dark .hljs-section { color: #1f6feb; font-weight: bold; }
+.dark .hljs-bullet { color: #f2cc60; }
+.dark .hljs-emphasis { color: #c9d1d9; font-style: italic; }
+.dark .hljs-strong { color: #c9d1d9; font-weight: bold; }
+.dark .hljs-addition { color: #aff5b4; background-color: #033a16; }
+.dark .hljs-deletion { color: #ffdcd7; background-color: #67060c; }
+
+/* ===== Mermaid 图表 ===== */
+.mermaid-diagram {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  overflow-x: auto;
+}
+.dark .mermaid-diagram {
+  background-color: #0d1117;
+  border-color: #30363d;
+}
+.mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+.mermaid-fallback {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  font-family: 'Fira Code', Consolas, Monaco, 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  overflow-x: auto;
+}
 
 /* ===== TOC 滚动条美化 ===== */
 .toc-scroll::-webkit-scrollbar { width: 4px; }
@@ -889,3 +966,4 @@ body {
   border-radius: 9999px;
   flex-shrink: 0;
 }
+

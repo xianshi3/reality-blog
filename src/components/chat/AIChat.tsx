@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import MermaidDiagram from "@/components/common/MermaidDiagram";
+import { markdownToText } from "@/lib/markdownText";
 import { Message } from "@/types/message";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { IoSend, IoStop } from "react-icons/io5";
@@ -24,43 +26,64 @@ const AVATAR = {
   ),
 };
 
-const MessageBubble = ({ message }: { message: Message }) => (
-  <div
-    className={`flex gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 ${
-      message.role === "user" ? "justify-end" : "justify-start"
-    }`}
-  >
-    {message.role === "assistant" && AVATAR.assistant}
-    <div
-      className={`max-w-[70%] px-3 py-2 text-sm shadow-sm ${
-        message.role === "user"
-          ? "bg-[#2563eb] text-white rounded-2xl rounded-tr-none"
-          : "bg-white dark:bg-[#23272f] text-[#374151] dark:text-[#cbd5e1] rounded-2xl rounded-tl-none"
-      }`}
-    >
-      {message.role === "assistant" ? (
-        <div className="prose prose-sm dark:prose-invert max-w-none [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-[#1e1e1e] [&_pre]:p-3 [&_code]:bg-transparent [&_p]:leading-relaxed [&_p]:mb-1 [&_ul]:my-1 [&_ol]:my-1">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeHighlight]}
-            components={{
-              a: ({ href, children }) => (
-                <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                  {children}
-                </a>
-              ),
-            }}
-          >
-            {message.content}
-          </ReactMarkdown>
+const MessageBubble = ({ message }: { message: Message }) => {
+return (
+    <>
+      <div
+        className={`flex gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 ${
+          message.role === "user" ? "justify-end" : "justify-start"
+        }`}
+      >
+        {message.role === "assistant" && AVATAR.assistant}
+        <div
+          className={`max-w-[70%] px-3 py-2 text-sm shadow-sm ${
+            message.role === "user"
+              ? "bg-[#2563eb] text-white rounded-2xl rounded-tr-none"
+              : "bg-white dark:bg-[#23272f] text-[#374151] dark:text-[#cbd5e1] rounded-2xl rounded-tl-none"
+          }`}
+        >
+          {message.role === "assistant" ? (
+            <div className="prose prose-sm dark:prose-invert max-w-none [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:p-3 [&_code]:bg-transparent [&_p]:leading-relaxed [&_p]:mb-1 [&_ul]:my-1 [&_ol]:my-1">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[[rehypeHighlight, { plainText: ["mermaid"] }]]}
+                components={{
+                  a: ({ href, children }) => (
+                    <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      {children}
+                    </a>
+                  ),
+                  pre: ({ children }) => {
+                    const child = Array.isArray(children) ? children[0] : children;
+                    const childClassName =
+                      child && typeof child === "object" && "props" in child
+                        ? (child.props as { className?: string }).className
+                        : undefined;
+                    if (
+                      typeof childClassName === "string" &&
+                      /language-mermaid/.test(childClassName)
+                    ) {
+                      const mermaidCode = markdownToText(
+                        (child.props as { children?: React.ReactNode }).children
+                      );
+                      return <MermaidDiagram code={mermaidCode} />;
+                    }
+                    return <pre>{children}</pre>;
+                  },
+                }}
+              >
+                {message.content}
+              </ReactMarkdown>
+            </div>
+          ) : (
+            <p className="whitespace-pre-wrap break-words">{message.content}</p>
+          )}
         </div>
-      ) : (
-        <p className="whitespace-pre-wrap break-words">{message.content}</p>
-      )}
-    </div>
-    {message.role === "user" && AVATAR.user}
-  </div>
-);
+        {message.role === "user" && AVATAR.user}
+      </div>
+    </>
+  );
+};
 
 const ChatHeader = ({
   onFullscreen,

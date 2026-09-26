@@ -11,7 +11,8 @@ import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
-import "highlight.js/styles/github-dark.css";
+import MermaidDiagram from "@/components/common/MermaidDiagram";
+import { markdownToText } from "@/lib/markdownText";
 import styles from "./fullscreen-chat.module.css";
 
 import { HiOutlineHome, HiOutlineSparkles, HiOutlinePlus, HiOutlineClock, HiOutlineDownload, HiOutlineSearch, HiOutlineX, HiOutlineChatAlt2, HiOutlineLightningBolt, HiOutlineCode, HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
@@ -107,17 +108,60 @@ const CopyButton = ({ text }: { text: string }) => {
   );
 };
 
-const CodeBlock = ({ inline, className, children, ...props }: any) => {
-  const match = /language-(\w+)/.exec(className || "");
-  const code = String(children).replace(/\n$/, "");
-  const language = match ? match[1] : "text";
-  const lines = code.split("\n");
+const splitHighlightedLines = (node: React.ReactNode): React.ReactNode[][] => {
+  const lines: React.ReactNode[][] = [[]];
+  let uid = 0;
 
-  if (!inline && match) {
+  const walk = (n: React.ReactNode): void => {
+    if (n === null || n === undefined || typeof n === "boolean") return;
+    if (Array.isArray(n)) {
+      n.forEach(walk);
+      return;
+    }
+    if (typeof n === "string" || typeof n === "number") {
+      String(n)
+        .split("\n")
+        .forEach((part, i) => {
+          if (i > 0) lines.push([]);
+          if (part) lines[lines.length - 1].push(part);
+        });
+      return;
+    }
+    if (React.isValidElement(n)) {
+      const startLine = lines.length - 1;
+      const startOffset = lines[startLine].length;
+      walk((n.props as { children?: React.ReactNode }).children);
+      const endLine = lines.length - 1;
+      for (let li = startLine; li <= endLine; li++) {
+        const offset = li === startLine ? startOffset : 0;
+        lines[li] = [
+          ...lines[li].slice(0, offset),
+          React.cloneElement(
+            n as React.ReactElement<Record<string, unknown>>,
+            { key: `t${uid++}` },
+            lines[li].slice(offset)
+          ),
+        ];
+      }
+    }
+  };
+
+  walk(node);
+  if (lines.length > 1 && lines[lines.length - 1].length === 0) lines.pop();
+  return lines;
+};
+
+const CodeBlock = ({ className, children }: { className?: string; children?: React.ReactNode }) => {
+  const match = /language-(\w+)/.exec(className || "");
+  const language = match ? match[1] : "text";
+  const plainCode = markdownToText(children).replace(/\n$/, "");
+
+  if (match) {
+    const lines = splitHighlightedLines(children);
     return (
       <div className={styles.codeBlockWrapper}>
         <div className={styles.codeHeader}>
-          <div className={styles.codeHeaderLeft}>
+          <div className={styles.codeHeaderInfo}>
             <div className={styles.codeDots}>
               <span />
               <span />
@@ -128,7 +172,7 @@ const CodeBlock = ({ inline, className, children, ...props }: any) => {
               {language}
             </span>
           </div>
-          <CopyButton text={code} />
+          <CopyButton text={plainCode} />
         </div>
         <div className={styles.codeBlockBody}>
           <pre className={`language-${language}`}>
@@ -136,7 +180,9 @@ const CodeBlock = ({ inline, className, children, ...props }: any) => {
               {lines.map((line, index) => (
                 <span key={index} className={styles.codeLine}>
                   <span className={styles.lineNumber}>{index + 1}</span>
-                  <span className={styles.lineContent}>{line || "\u00A0"}</span>
+                  <span className={styles.lineContent}>
+                    {line.length > 0 ? line : "\u00A0"}
+                  </span>
                 </span>
               ))}
             </code>
@@ -146,7 +192,7 @@ const CodeBlock = ({ inline, className, children, ...props }: any) => {
     );
   }
 
-  return <code className={className} {...props}>{children}</code>;
+  return <code className={className}>{children}</code>;
 };
 
 const STARTERS = [
@@ -196,6 +242,7 @@ function ChatContent() {
   const abortRef = useRef<AbortController | null>(null);
   const editTextareaRef = useRef<HTMLTextAreaElement>(null);
   const searchParams = useSearchParams();
+  const messagesParamConsumedRef = useRef(false);
   const router = useRouter();
 
   const scrollToBottom = useCallback(() => {
@@ -219,11 +266,14 @@ function ChatContent() {
   useEffect(() => {
     const messagesParam = searchParams.get("messages");
     if (messagesParam) {
+      if (messagesParamConsumedRef.current) return;
+      messagesParamConsumedRef.current = true;
       try {
         const parsedMessages = JSON.parse(messagesParam);
-        const formattedMessages = parsedMessages.map((msg: any) => ({
+        const formattedMessages = parsedMessages.map((msg: any, i: number) => ({
           ...msg,
           id: generateId(),
+          timestamp: typeof msg.timestamp === "number" ? msg.timestamp : Date.now() + i,
         }));
         const convId = generateId();
         setMessages(formattedMessages);
@@ -234,7 +284,7 @@ function ChatContent() {
       } catch (error) {
         console.error("Failed to parse messages from URL:", error);
       }
-    } else {
+    } else if (!messagesParamConsumedRef.current) {
       const savedId = getCurrentId();
       if (savedId) {
         const convs = getConversations();
@@ -768,8 +818,29 @@ function ChatContent() {
                         ) : msg.role === "assistant" ? (
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]}
-                            rehypePlugins={[rehypeRaw, rehypeSlug, [rehypeAutolinkHeadings, { behavior: "wrap" }], rehypeKatex, rehypeHighlight]}
-                            components={{ code: CodeBlock }}
+                            rehypePlugins={[rehypeRaw, rehypeSlug, [rehypeAutolinkHeadings, { behavior: "prepend" }], rehypeKatex, [rehypeHighlight, { plainText: ["mermaid"] }]]}
+                            components={{
+                              code: CodeBlock,
+                              pre: (props) => {
+                                const children = props.children;
+                                const child = Array.isArray(children) ? children[0] : children;
+                                const childProps =
+                                  child && typeof child === "object" && "props" in child
+                                    ? (child.props as { className?: string; children?: React.ReactNode })
+                                    : undefined;
+                                const childClassName = childProps?.className;
+                                if (
+                                  typeof childClassName === "string" &&
+                                  /language-mermaid/.test(childClassName)
+                                ) {
+                                  return <MermaidDiagram code={markdownToText(childProps?.children)} />;
+                                }
+                                if (typeof childClassName === "string" && /language-/.test(childClassName)) {
+                                  return <>{children}</>;
+                                }
+                                return <pre>{children}</pre>;
+                              },
+                            }}
                           >
                             {msg.content}
                           </ReactMarkdown>

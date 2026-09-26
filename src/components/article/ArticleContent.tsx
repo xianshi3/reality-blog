@@ -9,7 +9,8 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
-import 'highlight.js/styles/github-dark.css';
+import MermaidDiagram from "@/components/common/MermaidDiagram";
+import { markdownToText } from "@/lib/markdownText";
 import 'katex/dist/katex.min.css';
 
 type Props = {
@@ -24,9 +25,9 @@ export default function ArticleContent({ content }: Props) {
         rehypePlugins={[
           rehypeRaw,
           rehypeSlug,
-          [rehypeAutolinkHeadings, { behavior: "wrap" }],
+          [rehypeAutolinkHeadings, { behavior: "prepend" }],
           rehypeKatex,
-          rehypeHighlight,
+          [rehypeHighlight, { plainText: ["mermaid"] }],
         ]}
         components={{
           table: ({ children, ...props }) => (
@@ -36,18 +37,34 @@ export default function ArticleContent({ content }: Props) {
               </table>
             </div>
           ),
-          code: ({ children, ...props }) => {
+          code: ({ children, className, ...props }) => {
             const inline = typeof children === "string" && !children.includes("\n");
             if (inline) {
-              return <code {...props} className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">{children}</code>;
+              return <code {...props} className={`bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono ${className ?? ""}`}>{children}</code>;
             }
-            return <code {...props} className="block p-4 overflow-x-auto text-sm font-mono">{children}</code>;
+            return <code {...props} className={`block p-4 overflow-x-auto text-sm font-mono ${className ?? ""}`}>{children}</code>;
           },
-          pre: ({ children, ...props }) => (
-            <pre {...props} className="overflow-x-auto p-4 rounded-lg bg-gray-900 dark:bg-gray-950">
-              {children}
-            </pre>
-          ),
+          pre: ({ children, className, ...props }) => {
+            const child = Array.isArray(children) ? children[0] : children;
+            const childClassName =
+              child && typeof child === "object" && "props" in child
+                ? (child.props as { className?: string }).className
+                : undefined;
+            if (
+              typeof childClassName === "string" &&
+              /language-mermaid/.test(childClassName)
+            ) {
+              const mermaidCode = markdownToText(
+                (child.props as { children?: React.ReactNode }).children
+              );
+              return <MermaidDiagram code={mermaidCode} />;
+            }
+            return (
+              <pre {...props} className={`overflow-x-auto p-4 rounded-lg ${className ?? ""}`}>
+                {children}
+              </pre>
+            );
+          },
         }}
       >
         {content}
