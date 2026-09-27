@@ -3,16 +3,9 @@
 import React, { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkBreaks from "remark-breaks";
-import remarkMath from "remark-math";
-import rehypeHighlight from "rehype-highlight";
-import rehypeRaw from "rehype-raw";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeKatex from "rehype-katex";
 import MermaidDiagram from "@/components/common/MermaidDiagram";
-import { markdownToText } from "@/lib/markdownText";
+import { markdownToText, getMermaidCode, getChildCodeClassName } from "@/lib/markdownText";
+import { articleRemarkPlugins, articleRehypePlugins } from "@/lib/markdownPlugins";
 import styles from "./fullscreen-chat.module.css";
 
 import { HiOutlineHome, HiOutlineSparkles, HiOutlinePlus, HiOutlineClock, HiOutlineDownload, HiOutlineSearch, HiOutlineX, HiOutlineChatAlt2, HiOutlineLightningBolt, HiOutlineCode, HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
@@ -817,24 +810,17 @@ function ChatContent() {
                           </div>
                         ) : msg.role === "assistant" ? (
                           <ReactMarkdown
-                            remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]}
-                            rehypePlugins={[rehypeRaw, rehypeSlug, [rehypeAutolinkHeadings, { behavior: "prepend" }], rehypeKatex, [rehypeHighlight, { plainText: ["mermaid"] }]]}
+                            remarkPlugins={articleRemarkPlugins}
+                            rehypePlugins={articleRehypePlugins}
                             components={{
                               code: CodeBlock,
                               pre: (props) => {
                                 const children = props.children;
-                                const child = Array.isArray(children) ? children[0] : children;
-                                const childProps =
-                                  child && typeof child === "object" && "props" in child
-                                    ? (child.props as { className?: string; children?: React.ReactNode })
-                                    : undefined;
-                                const childClassName = childProps?.className;
-                                if (
-                                  typeof childClassName === "string" &&
-                                  /language-mermaid/.test(childClassName)
-                                ) {
-                                  return <MermaidDiagram code={markdownToText(childProps?.children)} />;
+                                const mermaidCode = getMermaidCode(children);
+                                if (mermaidCode !== null) {
+                                  return <MermaidDiagram code={mermaidCode} />;
                                 }
+                                const childClassName = getChildCodeClassName(children);
                                 if (typeof childClassName === "string" && /language-/.test(childClassName)) {
                                   return <>{children}</>;
                                 }

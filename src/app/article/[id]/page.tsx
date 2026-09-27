@@ -6,7 +6,6 @@
  * - 从 Supabase 获取文章数据
  * - 展示文章标题、时间、分类、摘要、正文、标签
  * - 提供点赞功能 (LikeButton)
- * - 显示阅读进度条 (ReadingProgress)
  * - 显示文章目录 (ArticleToc)
  * - 提供 AI 聊天助手 (AIChat)
  * - 固定返回首页按钮 (ReturnHome)

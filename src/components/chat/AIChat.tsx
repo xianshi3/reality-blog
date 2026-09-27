@@ -3,10 +3,9 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeHighlight from "rehype-highlight";
 import MermaidDiagram from "@/components/common/MermaidDiagram";
-import { markdownToText } from "@/lib/markdownText";
+import { getMermaidCode } from "@/lib/markdownText";
+import { chatRemarkPlugins, chatRehypePlugins } from "@/lib/markdownPlugins";
 import { Message } from "@/types/message";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { IoSend, IoStop } from "react-icons/io5";
@@ -45,8 +44,8 @@ return (
           {message.role === "assistant" ? (
             <div className="prose prose-sm dark:prose-invert max-w-none [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:p-3 [&_code]:bg-transparent [&_p]:leading-relaxed [&_p]:mb-1 [&_ul]:my-1 [&_ol]:my-1">
               <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[[rehypeHighlight, { plainText: ["mermaid"] }]]}
+                remarkPlugins={chatRemarkPlugins}
+                rehypePlugins={chatRehypePlugins}
                 components={{
                   a: ({ href, children }) => (
                     <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
@@ -54,18 +53,8 @@ return (
                     </a>
                   ),
                   pre: ({ children }) => {
-                    const child = Array.isArray(children) ? children[0] : children;
-                    const childClassName =
-                      child && typeof child === "object" && "props" in child
-                        ? (child.props as { className?: string }).className
-                        : undefined;
-                    if (
-                      typeof childClassName === "string" &&
-                      /language-mermaid/.test(childClassName)
-                    ) {
-                      const mermaidCode = markdownToText(
-                        (child.props as { children?: React.ReactNode }).children
-                      );
+                    const mermaidCode = getMermaidCode(children);
+                    if (mermaidCode !== null) {
                       return <MermaidDiagram code={mermaidCode} />;
                     }
                     return <pre>{children}</pre>;
