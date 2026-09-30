@@ -73,6 +73,7 @@
 | <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white"/> 后台管理 | 控制台统计、文章管理（搜索/分页/分类筛选）、图片管理、个人信息设置 |
 | <img src="https://img.shields.io/badge/ZhipuAI-3859FF?style=flat-square&logoColor=white"/> AI 聊天 | 集成智谱 GLM-4-Flash 模型，浮动气泡 + 全屏双模式，流式输出 |
 | <img src="https://img.shields.io/badge/AI_摘要-6366f1?style=flat-square&logoColor=white"/> AI 摘要 | 文章卡片底部一键生成一句话摘要，服务端 + 本地双重缓存，零重复开销 |
+| <img src="https://img.shields.io/badge/Mermaid-FF3670?style=flat-square&logo=mermaid&logoColor=white"/> 图表 | 文章与 AI 聊天支持 Mermaid 流程图 / 时序图自动渲染，深浅主题适配，失败自动回退代码块 |
 | <img src="https://img.shields.io/badge/dynamic-6366f1?style=flat-square&label=Parallax&labelColor=6366f1&color=6366f1"/> 视差首页 | 动态视差滚动背景 + 鼠标 3D 倾斜交互，支持自定义背景图与标题 |
 | <img src="https://img.shields.io/badge/Framer-0055FF?style=flat-square&logo=framer&logoColor=white"/> 动画 | 页面过渡动画、卡片悬停效果、视差滚动、点赞微交互 |
 | <img src="https://img.shields.io/badge/dark_mode-000000?style=flat-square&logo=darkreader&logoColor=white"/> 深色模式 | 系统自动感知 + 手动切换，inline script 防 FOUC，全站适配 |
@@ -123,12 +124,12 @@
 | **框架** | Next.js 16 (App Router, Turbopack) + React 19 + TypeScript 5 |
 | **样式** | TailwindCSS 4 + 毛玻璃效果 (backdrop-filter) |
 | **数据库** | Supabase (PostgreSQL + Auth + Storage + RLS) |
-| **Markdown** | react-markdown + remark-gfm + rehype-highlight + rehype-slug |
+| **Markdown** | react-markdown + remark-gfm + rehype-highlight + rehype-katex + Mermaid 12 |
 | **动画** | Framer Motion 12 + CSS Animations |
 | **AI** | ZhipuAI SDK (GLM-4-Flash, SSE 流式) |
 | **图片** | react-easy-crop (裁剪) + Supabase Storage (存储) |
 | **图标** | react-icons (Font Awesome 6) |
-| **代码高亮** | highlight.js (GitHub Dark) |
+| **代码高亮** | rehype-highlight（本地 GitHub 亮 / 暗双主题，无 CDN 依赖） |
 
 </div>
 
@@ -279,14 +280,14 @@ src/
 │   ├── manifest.ts         # PWA manifest
 │   └── icon.svg            # favicon
 ├── components/
-│   ├── layout/             # 布局组件（Navbar, Header, Sidebar, Footer）
+│   ├── layout/             # 布局组件（Navbar, Header, RightSidebar, ThemeToggle, Footer）
 │   ├── article/            # 文章组件（Content, TOC, Search, Tags）
-│   ├── common/             # 通用组件（LikeButton, ImageCropper, Cards）
+│   ├── common/             # 通用组件（LikeButton, ImageCropper, MermaidDiagram）
 │   ├── chat/               # AI 聊天组件
 │   ├── github/             # GitHub 项目展示组件
 │   └── admin/              # 管理后台组件
 ├── config/                 # 站点配置（GitHub 精选仓库等）
-├── lib/                    # 工具库（Supabase 客户端, 上传, GitHub API）
+├── lib/                    # 工具库（Supabase 客户端, 上传, GitHub API, Markdown 渲染配置）
 ├── types/                  # TypeScript 类型
 └── proxy.ts                # 认证代理（Next.js 16 Proxy 约定，调用 getUser() 验签判断会话）
 ```
@@ -321,7 +322,8 @@ src/
 ### 文章阅读体验
 
 - 📑 可拖拽 **目录导航**（支持固定/浮动切换）
-- 🎨 代码块 **语法高亮**（highlight.js GitHub Dark）
+- 🎨 代码块 **语法高亮**（rehype-highlight，本地 GitHub 亮 / 暗双主题，白主题浅色底）
+- 📊 **Mermaid 图表**（流程图 / 时序图自动渲染，文章页与 AI 聊天三处渲染器统一接入）
 - ❤️ 响应式 **点赞按钮**（带动画）
 
 ### SEO 与错误处理

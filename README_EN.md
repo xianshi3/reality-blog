@@ -73,6 +73,7 @@
 | <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white"/> Admin Panel | Dashboard stats, article management (search/pagination/category filter), image manager, profile settings |
 | <img src="https://img.shields.io/badge/ZhipuAI-3859FF?style=flat-square&logoColor=white"/> AI Chat | Zhipu GLM-4-Flash model, floating bubble + fullscreen modes, streaming output |
 | <img src="https://img.shields.io/badge/AI_Summary-6366f1?style=flat-square&logoColor=white"/> AI Summary | One-click one-line summary in the article card footer, with server-side + local caching |
+| <img src="https://img.shields.io/badge/Mermaid-FF3670?style=flat-square&logo=mermaid&logoColor=white"/> Diagrams | Mermaid flow/sequence diagrams auto-rendered in articles & AI chat, both themes, falls back to code block on failure |
 | <img src="https://img.shields.io/badge/dynamic-6366f1?style=flat-square&label=Parallax&labelColor=6366f1&color=6366f1"/> Parallax Home | Dynamic parallax background + 3D mouse tilt, custom background & titles |
 | <img src="https://img.shields.io/badge/Framer-0055FF?style=flat-square&logo=framer&logoColor=white"/> Animations | Page transitions, card hover effects, parallax scrolling, like micro-interactions |
 | <img src="https://img.shields.io/badge/dark_mode-000000?style=flat-square&logo=darkreader&logoColor=white"/> Dark Mode | Auto-detect + manual toggle, inline script prevents FOUC |
@@ -94,12 +95,12 @@
 | **Framework** | Next.js 16 (App Router, Turbopack) + React 19 + TypeScript 5 |
 | **Styling** | TailwindCSS 4 + frosted-glass effects (backdrop-filter) |
 | **Database** | Supabase (PostgreSQL + Auth + Storage + RLS) |
-| **Markdown** | react-markdown + remark-gfm + rehype-highlight + rehype-slug |
+| **Markdown** | react-markdown + remark-gfm + rehype-highlight + rehype-katex + Mermaid 12 |
 | **Animation** | Framer Motion 12 + CSS Animations |
 | **AI** | ZhipuAI SDK (GLM-4-Flash, SSE streaming) |
 | **Images** | react-easy-crop + Supabase Storage |
 | **Icons** | react-icons (Font Awesome 6) |
-| **Code Highlight** | highlight.js (GitHub Dark) |
+| **Code Highlight** | rehype-highlight (local GitHub light/dark themes, no CDN) |
 
 </div>
 
@@ -256,14 +257,14 @@ src/
 │   ├── manifest.ts         # PWA manifest
 │   └── icon.svg            # favicon
 ├── components/
-│   ├── layout/             # Layout (Navbar, Header, Sidebar, Footer)
+│   ├── layout/             # Layout (Navbar, Header, RightSidebar, ThemeToggle, Footer)
 │   ├── article/            # Article (Content, TOC, Search, Tags)
-│   ├── common/             # Common (LikeButton, ImageCropper, Cards)
+│   ├── common/             # Common (LikeButton, ImageCropper, MermaidDiagram)
 │   ├── chat/               # AI chat components
 │   ├── github/             # GitHub showcase components
 │   └── admin/              # Admin components
 ├── config/                 # Site config (featured GitHub repos, etc.)
-├── lib/                    # Utils (Supabase client, upload, GitHub API)
+├── lib/                    # Utils (Supabase client, upload, GitHub API, Markdown rendering)
 ├── types/                  # TypeScript types
 └── proxy.ts                # Auth proxy (Next.js 16 Proxy convention, getUser() verification)
 ```
@@ -298,7 +299,8 @@ The article card footer has an "AI Summary" entry (a minimal text button). Click
 ### Reading Experience
 
 - 📑 Draggable **table of contents** (fixed/floating switch)
-- 🎨 **Syntax highlighting** for code blocks (highlight.js GitHub Dark)
+- 🎨 **Syntax highlighting** for code blocks (rehype-highlight, local GitHub light/dark themes, light background in light mode)
+- 📊 **Mermaid diagrams** (flow/sequence charts, unified across article page and both AI chat renderers)
 - ❤️ Responsive **like button** with animation
 
 ### SEO & Error Handling
