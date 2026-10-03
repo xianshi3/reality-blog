@@ -13,8 +13,9 @@ interface Profile {
 }
 
 /**
- * 个人资料卡片
- * 头像、昵称、职位与社交链接，数据来自 /api/profile
+ * 个人资料卡片（首页右侧栏）
+ * 展示头像、昵称、职位与社交链接，数据来自 /api/profile。
+ * 卡片样式与侧栏其它卡片（技术栈 / 搜索 / 标签）保持一致。
  */
 export default function ProfileCard({ className }: { className?: string }) {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -27,58 +28,79 @@ export default function ProfileCard({ className }: { className?: string }) {
       });
   }, []);
 
-  const cardClass =
-    "bg-white dark:bg-[#23272f] border border-gray-100 dark:border-gray-800 rounded-2xl shadow-lg p-6 transition-all duration-300 ease-in-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl";
-
   const p = profile;
 
   return (
-    <div className={`${cardClass} flex flex-col items-center text-center ${className ?? ""}`}>
-
-      <div className="mb-4 p-1 rounded-2xl bg-gradient-to-br from-white/40 to-white/10 dark:from-white/10 dark:to-white/5 shadow-sm">
+    <div
+      className={`
+        flex flex-col items-center rounded-2xl border border-gray-100 bg-white p-5 text-center
+        shadow-lg transition-all duration-300 ease-in-out
+        hover:-translate-y-1 hover:scale-[1.02] hover:shadow-xl
+        dark:border-gray-800 dark:bg-[#23272f] sm:p-6
+        ${className ?? ""}
+      `}
+    >
+      {/* 头像：方形（rounded-xl 圆角），与网站卡片风格保持一致 */}
+      <div className="group">
         {p?.avatar_url ? (
           <ImageWithLoader
             src={p.avatar_url}
             alt="头像"
-            wrapperClassName="admin-avatar-img w-24 h-24 rounded-xl"
-            className="w-24 h-24 rounded-xl object-cover ring-1 ring-white/50 dark:ring-white/20 shadow-lg"
-            hoverable
+            wrapperClassName="h-24 w-24 rounded-xl"
+            className="h-24 w-24 rounded-xl object-cover ring-2 ring-gray-100 transition-transform duration-300 group-hover:scale-[1.03] dark:ring-white/10"
           />
         ) : (
-          <div className="admin-avatar-img w-24 h-24 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-            <FaUser className="w-8 h-8 text-gray-400" />
+          <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-gray-100 ring-2 ring-gray-100 transition-transform duration-300 group-hover:scale-[1.03] dark:bg-gray-800 dark:ring-white/10">
+            <FaUser className="h-8 w-8 text-gray-400" />
           </div>
         )}
       </div>
 
-      <h1 className="flex items-center gap-2 text-xl font-bold text-gray-800 dark:text-white">
-        <FaUser className="text-base opacity-80" />
+      {/* 昵称 */}
+      <h1 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
         {p?.name || "Reality"}
       </h1>
 
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      {/* 职位 */}
+      <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
         {p?.title || "Full Stack Developer"}
       </p>
 
-      <div className="w-full h-px bg-gray-200 dark:border-gray-700 dark:bg-gray-700 my-4" />
+      {/* 分隔线 */}
+      <div className="my-4 h-px w-full bg-gray-200 dark:bg-gray-800" />
 
-      <div className="flex justify-center gap-4">
+      {/* 社交链接 */}
+      <div className="flex items-center gap-3">
         <a
           href={p?.github_url || "https://github.com/xianshi3"}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-110 hover:shadow-md"
+          aria-label="GitHub"
+          title="GitHub"
+          className="
+            flex h-9 w-9 items-center justify-center rounded-lg
+            border border-gray-200 text-gray-600 transition-all duration-300 ease-out
+            hover:-translate-y-0.5 hover:border-gray-900 hover:bg-gray-900 hover:text-white hover:shadow-md
+            dark:border-gray-700 dark:text-gray-300 dark:hover:border-white dark:hover:bg-white dark:hover:text-gray-900
+          "
         >
-          <FaGithub className="w-5 h-5" />
+          <FaGithub className="h-4 w-4" />
         </a>
 
         <a
           href={p?.twitter_url || "https://x.com/xianshi_3"}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-110 hover:shadow-md"
+          aria-label="X (Twitter)"
+          title="X (Twitter)"
+          className="
+            flex h-9 w-9 items-center justify-center rounded-lg
+            border border-gray-200 text-gray-600 transition-all duration-300 ease-out
+            hover:-translate-y-0.5 hover:border-gray-900 hover:bg-gray-900 hover:text-white hover:shadow-md
+            dark:border-gray-700 dark:text-gray-300 dark:hover:border-white dark:hover:bg-white dark:hover:text-gray-900
+          "
         >
-          <FaXTwitter className="w-5 h-5" />
+          <FaXTwitter className="h-4 w-4" />
         </a>
       </div>
     </div>

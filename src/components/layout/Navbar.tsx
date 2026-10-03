@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import {
-  FiHome,
-  FiGrid,
-  FiMessageSquare,
+  FiCompass,
+  FiFolder,
+  FiCpu,
   FiMenu,
   FiX,
+  FiTerminal,
 } from "react-icons/fi";
 
 export default function Navbar() {
@@ -42,9 +43,9 @@ export default function Navbar() {
   }, []);
 
   const navItems = [
-    { label: "首页", href: "/", icon: <FiHome size={16} /> },
-    { label: "分类", href: "/category", icon: <FiGrid size={16} /> },
-    { label: "AI Chat", href: "/ai-chat/fullscreen", icon: <FiMessageSquare size={16} /> },
+    { label: "首页", href: "/", icon: <FiCompass size={16} /> },
+    { label: "分类", href: "/category", icon: <FiFolder size={16} /> },
+    { label: "AI Chat", href: "/ai-chat/fullscreen", icon: <FiCpu size={16} /> },
   ];
 
   return (
@@ -63,21 +64,26 @@ export default function Navbar() {
       `}
       style={{ transform: hidden ? "translateY(-100%)" : "translateY(0)" }}
     >
-      <div className="container mx-auto flex justify-between items-center py-3 px-4 sm:py-4 sm:px-6">
-        
+      <div className="container mx-auto flex items-center justify-between px-4 py-3 sm:px-6 sm:py-3.5">
+
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2 text-xl sm:text-2xl text-gray-800 dark:text-white [font-family:var(--font-title)] tracking-[0.05em]"
+          className="group flex items-center gap-2.5"
         >
-          <span>Reality Blog</span>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-black/[0.05] text-gray-900 transition-all duration-300 ease-out group-hover:scale-105 group-hover:bg-black/[0.09] dark:bg-white/[0.08] dark:text-white dark:group-hover:bg-white/[0.14]">
+            <FiTerminal size={18} strokeWidth={2} />
+          </span>
+          <span className="text-xl font-semibold tracking-tight text-gray-800 dark:text-white [font-family:var(--font-title)] sm:text-2xl">
+            Reality Blog
+          </span>
         </Link>
 
         {/* 右侧区域 */}
-        <div className="flex items-center space-x-4 sm:space-x-8">
+        <div className="flex items-center gap-3 sm:gap-4">
 
           {/* 桌面导航 */}
-          <ul className="hidden md:flex space-x-6">
+          <ul className="hidden items-center gap-1 md:flex">
             {navItems.map(({ label, href, icon }) => (
               <li key={href}>
                 <Link
@@ -87,23 +93,25 @@ export default function Navbar() {
                     text-sm sm:text-base font-medium
                     text-gray-800 dark:text-gray-200
                     px-3 py-2 rounded-lg
-                    transition-all duration-300
-                    hover:bg-white/40 dark:hover:bg-white/5
+                    transition-all duration-300 ease-out
+                    hover:bg-white/50 dark:hover:bg-white/5
+                    hover:-translate-y-0.5 active:translate-y-0 active:scale-95
                   "
                 >
-                  <span className="text-gray-500 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300">
+                  <span className="inline-flex text-gray-500 dark:text-gray-400 transition-all duration-300 ease-out group-hover:scale-110 group-hover:-translate-y-px group-hover:text-blue-500 dark:group-hover:text-blue-400">
                     {icon}
                   </span>
 
                   {label}
 
-                  {/* 底部滑动线 */}
+                  {/* 底部滑动线（中心向外展开） */}
                   <span
                     className="
-                      absolute left-0 -bottom-1 h-[2px] w-0
-                      bg-blue-500
-                      transition-all duration-300
-                      group-hover:w-full
+                      absolute left-3 right-3 -bottom-1 h-[2px] rounded-full
+                      bg-gradient-to-r from-blue-500 to-cyan-400
+                      origin-center scale-x-0
+                      transition-transform duration-300 ease-out
+                      group-hover:scale-x-100
                     "
                   />
                 </Link>
@@ -123,8 +131,9 @@ export default function Navbar() {
               rounded-lg
               p-2
               text-gray-800 dark:text-white
-              hover:bg-white/30 dark:hover:bg-white/10
-              transition-all duration-300
+              transition-all duration-300 ease-out
+              hover:bg-white/50 dark:hover:bg-white/10 hover:scale-105
+              active:scale-90
             "
           >
             {isMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
@@ -155,8 +164,9 @@ export default function Navbar() {
                 text-sm font-medium
                 text-gray-800 dark:text-white
                 px-3 py-2 rounded-lg
-                hover:bg-white/40 dark:hover:bg-white/10
-                transition-all duration-300
+                transition-all duration-300 ease-out
+                hover:bg-white/50 dark:hover:bg-white/10 hover:translate-x-1
+                active:scale-[0.98]
               "
             >
               <span className="text-gray-500 dark:text-gray-400">{icon}</span>

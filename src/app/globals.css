@@ -88,16 +88,6 @@ body {
   background-image: var(--bg-gradient);
 }
 
-.navbar-container {
-  width: 100%;
-  padding: 1.5rem 2rem;
-  display: flex;
-  justify-content: center;
-  background: transparent;
-  z-index: 10;
-  position: relative;
-}
-
 .container-home {
   margin-left: auto;
   margin-right: auto;

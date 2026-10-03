@@ -9,9 +9,20 @@ export default function Footer({ currentYear }: FooterProps) {
 
       <div className="mx-auto max-w-5xl px-6 py-10">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-4">
-          <p className="text-lg font-bold text-gray-400 dark:text-gray-500 tracking-wide">
-            Reality Blog
-          </p>
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-200/70 text-gray-500 dark:bg-white/10 dark:text-gray-300">
+              <svg
+                width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              >
+                <polyline points="4 17 10 11 4 5" />
+                <line x1="12" y1="19" x2="20" y2="19" />
+              </svg>
+            </span>
+            <p className="text-lg font-bold text-gray-400 dark:text-gray-500 tracking-wide">
+              Reality Blog
+            </p>
+          </div>
 
           <a
             href="https://github.com/xianshi3/Reality-Blog"
