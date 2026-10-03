@@ -104,7 +104,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 90rem;
+  max-width: 104rem;
   padding-left: 1rem;
   padding-right: 1rem;
   gap: 1.5rem;
@@ -112,7 +112,9 @@ body {
   padding-bottom: 1.5rem;
 }
 
-@media (min-width: 1024px) {
+/* 三栏并排仅在 xl（1280px）及以上启用，与 Tailwind 的 xl:w-60 / xl:order-none 对齐。
+   低于该断点时侧栏宽度为 w-full，若此时切成 row 会被 flex-shrink-0 撑爆布局，故断点必须同步。 */
+@media (min-width: 1280px) {
   .container-home {
     flex-direction: row;
   }
