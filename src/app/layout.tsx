@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Russo_One } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const russoOne = Russo_One({
+const spaceGrotesk = Space_Grotesk({
   variable: "--font-title",
   subsets: ["latin"],
   display: "swap",
-  weight: "400",
+  weight: ["500", "600", "700"],
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -61,7 +61,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh" className={`${geistSans.variable} ${geistMono.variable} ${russoOne.variable}`} suppressHydrationWarning>
+    <html lang="zh" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{
           __html: `

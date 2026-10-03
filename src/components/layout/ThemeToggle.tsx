@@ -73,10 +73,10 @@ export default function ThemeToggle() {
       onKeyDown={onKeyDown}
       aria-label="切换主题"
       title="切换主题"
-      className="relative w-14 h-7 rounded-full bg-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 flex items-center transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900"
+      className="relative w-14 h-7 rounded-full bg-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 flex items-center transition-all duration-300 ease-out hover:scale-105 hover:shadow-md active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900"
     >
       <span
-        className={`absolute top-1/2 left-1 w-5 h-5 rounded-full shadow-sm transform -translate-y-1/2 transition duration-300 ease-in-out ${
+        className={`absolute top-1/2 left-1 w-5 h-5 rounded-full shadow-sm transform -translate-y-1/2 transition-all duration-300 ease-out ${
           isDark ? "translate-x-7 bg-gray-800" : "translate-x-0 bg-white"
         }`}
       />
