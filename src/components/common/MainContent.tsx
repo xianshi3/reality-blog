@@ -31,8 +31,8 @@ export default function MainContent({
       {/* ===================== */}
 
       <div key={currentPage}>
-        {/* 统一 grid，不再分年份 */}
-        <div className="md:columns-2 columns-1 gap-x-6">
+        {/* 响应式瀑布流：无侧栏时双栏，xl 起侧栏出现收窄为单栏，2xl 再回到双栏 */}
+        <div className="columns-1 gap-x-6 md:columns-2 xl:columns-1 2xl:columns-2">
 
           {articles.map((article, index) => (
             <div key={article.link} className="break-inside-avoid mb-6">

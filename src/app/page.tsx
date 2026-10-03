@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import MainContent from '@/components/common/MainContent';
+import LeftSidebar from '@/components/layout/LeftSidebar';
 import RightSidebar from '@/components/layout/RightSidebar';
 import Footer from '@/components/layout/Footer';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
@@ -77,15 +78,17 @@ export default async function Home({
         parallaxSubtitle={profile?.parallax_subtitle ?? ""}
       />
 
-      {/* 主体区域：文章内容 + 右侧栏 */}
+      {/* 主体区域：桌面端为「左侧栏 + 文章 + 右侧栏」三栏并排；
+          xl 以下通过 order 调整为「文章 → 左侧栏 → 右侧栏」纵向堆叠 */}
       <main className="container-home">
+        <LeftSidebar className="order-2 xl:order-none" />
         <MainContent
-          className="flex-1 min-w-0"
+          className="order-1 xl:order-none flex-1 min-w-0"
           articles={articles}
           currentPage={page}
         />
         <RightSidebar
-          className="w-72 flex-shrink-0 hidden lg:block"
+          className="order-3 xl:order-none"
           articles={articles}
         />
       </main>
