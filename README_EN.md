@@ -156,7 +156,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=      # Supabase anon key
 SUPABASE_SERVICE_ROLE_KEY=          # Supabase service role key (server-only, writes + rate limiting)
 ADMIN_EMAIL=                        # Admin email (admin pages & write APIs only allow this email)
 ZHIPU_API_KEY=                      # Zhipu AI API key
-NEXT_PUBLIC_SITE_URL=               # Real site domain (sitemap / robots / OG metadata)
+NEXT_PUBLIC_SITE_URL=               # Real site domain (sitemap / robots / OG metadata); use https://www.example.com (bare domains are normalized to www)
 GITHUB_TOKEN=                       # GitHub showcase (optional, unauthenticated API limited to 60 req/h)
 ```
 
@@ -263,7 +263,7 @@ src/
 │   ├── chat/               # AI chat components
 │   ├── github/             # GitHub showcase components
 │   └── admin/              # Admin components
-├── config/                 # Site config (featured GitHub repos, etc.)
+├── config/                 # Site config (featured GitHub repos, canonical host & site URL)
 ├── lib/                    # Utils (Supabase client, upload, GitHub API, Markdown rendering)
 ├── types/                  # TypeScript types
 └── proxy.ts                # Auth proxy (Next.js 16 Proxy convention, getUser() verification)
@@ -306,6 +306,7 @@ The article card footer has an "AI Summary" entry (a minimal text button). Click
 ### SEO & Error Handling
 
 - 🗺️ Auto-generated **sitemap.xml** (articles / categories / static pages) and **robots.txt**
+- 🌐 **Single `www` canonical host**: bare domains are normalized and 308-redirected, so sitemap / robots / share URLs always match
 - 📱 **PWA manifest** + favicon + OG/Twitter share images
 - 🚧 Frosted-glass **404 / error pages** (global + root-layout error boundaries, dark mode aware)
 
@@ -328,6 +329,21 @@ npm run lint     # lint
 ```
 
 Deploying to [Vercel](https://vercel.com) is recommended — it auto-detects Next.js with zero config.
+
+### Custom Domain (single `www` canonical host)
+
+The site URL lives in one place — [`src/config/site.ts`](./src/config/site.ts). After forking, change this one line:
+
+```ts
+export const PRIMARY_HOST = "www.your-domain.com"; // bare domain is derived automatically as the redirect source
+```
+
+- Set `NEXT_PUBLIC_SITE_URL=https://www.your-domain.com`; **a bare domain is normalized to `www` automatically** (adds `www`, strips the trailing slash)
+- Fallback when unset: production → `https://<PRIMARY_HOST>`, local dev → `http://localhost:3000`
+- `metadataBase` / `og:url` / `sitemap.xml` / `robots.txt` all read the same source, so bare and `www` never get indexed twice
+- Requests to the bare domain are **308 permanently redirected** to `www` (matched by `Host` in `next.config.ts`, no CDN config required, path and query string preserved)
+
+> ☁️ **Cloudflare note**: if the zone is proxied (orange cloud), some regions may time out due to interference on that route. This project does not rely on a CDN (Vercel already ships a global one), so you can flip the records to **DNS only (grey cloud)** for a direct connection — switching and rolling back both take effect within seconds.
 
 ---
 

@@ -179,7 +179,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=      # Supabase 匿名密钥
 SUPABASE_SERVICE_ROLE_KEY=          # Supabase 服务角色密钥（仅服务端，写操作落库 + AI 聊天跨实例限流）
 ADMIN_EMAIL=                        # 管理员邮箱（强烈建议：后台页面与写接口仅允许该邮箱登录）
 ZHIPU_API_KEY=                      # 智谱 AI API 密钥
-NEXT_PUBLIC_SITE_URL=               # 站点真实域名（sitemap / robots / OG 元数据）
+NEXT_PUBLIC_SITE_URL=               # 站点真实域名（sitemap / robots / OG 元数据），统一填 https://www.域名（填裸域名会被自动规范化为 www）
 GITHUB_TOKEN=                       # GitHub 项目展示（可选，未配置则用未认证 API，限 60 次/小时）
 ```
 
@@ -286,7 +286,7 @@ src/
 │   ├── chat/               # AI 聊天组件
 │   ├── github/             # GitHub 项目展示组件
 │   └── admin/              # 管理后台组件
-├── config/                 # 站点配置（GitHub 精选仓库等）
+├── config/                 # 站点配置（GitHub 精选仓库、主域名与站点地址）
 ├── lib/                    # 工具库（Supabase 客户端, 上传, GitHub API, Markdown 渲染配置）
 ├── types/                  # TypeScript 类型
 └── proxy.ts                # 认证代理（Next.js 16 Proxy 约定，调用 getUser() 验签判断会话）
@@ -329,6 +329,7 @@ src/
 ### SEO 与错误处理
 
 - 🗺️ 自动生成 **sitemap.xml**（文章 / 分类 / 静态页）与 **robots.txt**
+- 🌐 **主域名统一 www**：裸域名自动规范化并 308 跳转，sitemap / robots / 分享卡片地址始终一致
 - 📱 **PWA manifest** + favicon + OG/Twitter 分享图
 - 🚧 毛玻璃风格 **404 / 错误页**（全局 + 根布局双错误边界，适配深色模式）
 
@@ -351,6 +352,21 @@ npm run lint     # 代码检查
 ```
 
 推荐部署到 [Vercel](https://vercel.com)，零配置自动识别 Next.js。
+
+### 自定义域名（统一 www 主域名）
+
+全站站点地址收敛在 [`src/config/site.ts`](./src/config/site.ts)，Fork 后改这一处即可：
+
+```ts
+export const PRIMARY_HOST = "www.your-domain.com"; // 裸域名会自动作为重定向来源
+```
+
+- `NEXT_PUBLIC_SITE_URL` 填 `https://www.你的域名`；**填裸域名也会被自动规范化为 www**（补 www + 去掉末尾斜杠）
+- 未配置时：生产构建兜底 `https://<PRIMARY_HOST>`，本地开发兜底 `http://localhost:3000`
+- `metadataBase` / `og:url` / `sitemap.xml` / `robots.txt` 全部读同一来源，避免裸域名与 www 双份收录
+- 裸域名访问会 **308 永久重定向** 到 www（在 `next.config.ts` 中按 `Host` 匹配，不依赖 CDN 配置，路径与查询串保留）
+
+> ☁️ **Cloudflare 提示**：若域名接入 Cloudflare 并开启代理（橙云），部分地区访问可能因链路被干扰而超时。本项目不依赖 CDN（源站 Vercel 自带全球 CDN），可在 Cloudflare 把记录切成 **DNS only（灰云）** 直连，切换/回滚均为秒级生效。
 
 ---
 
